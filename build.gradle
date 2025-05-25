@@ -16,12 +16,17 @@ java {
 
 repositories {
 	mavenCentral()
+	maven {
+		url "https://repo.maven.apache.org/maven2"
+	}
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+	implementation "org.apache.tomcat.embed:tomcat-embed-jasper"
 	runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

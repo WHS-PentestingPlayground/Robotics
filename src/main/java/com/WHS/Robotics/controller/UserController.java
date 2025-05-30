@@ -13,6 +13,7 @@ import com.WHS.Robotics.entity.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.WHS.Robotics.config.auth.PrincipalDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Controller
 @RequestMapping
@@ -21,6 +22,8 @@ public class UserController {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // /login, /logout은 Spring Security에서 기본적으로 지원
     // 로그인 폼

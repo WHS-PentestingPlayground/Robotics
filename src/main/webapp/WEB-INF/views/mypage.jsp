@@ -1,0 +1,54 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ include file="header.jsp" %>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지 - 화햇 로보틱스</title>
+    <link rel="stylesheet" href="/css/mypage.css">
+</head>
+<body>
+    <div class="mypage-container">
+        <div class="mypage-header">
+            <h1>마이페이지</h1>
+        </div>
+        
+        <div class="mypage-content">
+            <% if (request.getAttribute("error") != null) { %>
+                <div class="error-message">
+                    <%= request.getAttribute("error") %>
+                </div>
+            <% } %>
+            
+            <div class="user-info">
+                <h2>회원 정보</h2>
+                <div class="info-item">
+                    <span class="label">아이디:</span>
+                    <span class="value">${user.username}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">회원 등급:</span>
+                    <span class="value">${user.role}</span>
+                </div>
+                <c:if test="${not empty user.business_token}">
+                    <div class="info-item">
+                        <span class="label">기업 토큰:</span>
+                        <span class="value">${user.business_token}</span>
+                    </div>
+                </c:if>
+                <div class="info-item">
+                    <span class="label">가입일:</span>
+                    <span class="value">${user.created_at}</span>
+                </div>
+            </div>
+
+            <div class="mypage-actions">
+                <button class="action-btn" onclick="location.href='/mypage/edit'">정보 수정</button>
+                <button class="action-btn" onclick="location.href='/mypage/change-password'">비밀번호 변경</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

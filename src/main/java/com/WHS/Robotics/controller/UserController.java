@@ -7,10 +7,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 import com.WHS.Robotics.repository.UserRepository;
+import com.WHS.Robotics.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.WHS.Robotics.service.UserService;
-
+import jakarta.servlet.http.HttpSession;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
+import com.WHS.Robotics.config.auth.PrincipalDetails;
 
 @Controller
 @RequestMapping
@@ -58,5 +66,21 @@ public class UserController {
         }
     }
 
-
+    // 마이페이지
+    @GetMapping("/mypage")
+    public String myPage(Model model) {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated()) {
+                PrincipalDetails principalDetails = (PrincipalDetails) auth.getPrincipal();
+                User user = principalDetails.getUser();
+                model.addAttribute("user", user);
+                return "mypage";
+            }
+            return "redirect:/login";
+        } catch (Exception e) {
+            model.addAttribute("error", "사용자 정보를 불러오는 중 오류가 발생했습니다.");
+            return "redirect:/login";
+        }
+    }
 }

@@ -7,17 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 import com.WHS.Robotics.repository.UserRepository;
-import com.WHS.Robotics.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.WHS.Robotics.service.UserService;
-import jakarta.servlet.http.HttpSession;
+import com.WHS.Robotics.entity.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import java.sql.SQLException;
 import com.WHS.Robotics.config.auth.PrincipalDetails;
 
 @Controller
@@ -25,8 +19,6 @@ import com.WHS.Robotics.config.auth.PrincipalDetails;
 public class UserController {
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private UserService userService;
 
@@ -47,9 +39,27 @@ public class UserController {
     @PostMapping("/register")
     public String register(@RequestParam String username,
                           @RequestParam String password,
+                          @RequestParam String passwordConfirm,
                           @RequestParam String role,
                           Model model) {
         try {
+            // 아이디 규칙 체크: 4~16자리, 영문/숫자만 허용
+            String usernameError = userService.validateUsername(username);
+            if (usernameError != null) {
+                model.addAttribute("error", usernameError);
+                return "register";
+            }
+            // 비밀번호 규칙 체크: 8~16자리, 영문 대소문자, 숫자, 특수문자 중 2가지 이상 조합
+            String passwordError = userService.validatePassword(password);
+            if (passwordError != null) {
+                model.addAttribute("error", passwordError);
+                return "register";
+            }
+            // 비밀번호 확인 체크
+            if (!password.equals(passwordConfirm)) {
+                model.addAttribute("error", "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+                return "register";
+            }
             // 중복 체크
             if (userRepository.findByUsername(username) != null) {
                 model.addAttribute("error", "이미 존재하는 아이디입니다.");

@@ -19,6 +19,9 @@
     <label for="password">비밀번호:</label>
     <input type="password" id="password" name="password" required><br><br>
 
+    <label for="passwordConfirm">비밀번호 확인:</label>
+    <input type="password" id="passwordConfirm" name="passwordConfirm" required><br><br>
+
     <label for="role">회원 유형:</label>
     <select id="role" name="role" required>
         <option value="USER">일반</option>

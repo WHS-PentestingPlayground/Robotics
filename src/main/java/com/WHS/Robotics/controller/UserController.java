@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.WHS.Robotics.service.UserService;
 import com.WHS.Robotics.entity.User;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import com.WHS.Robotics.config.auth.PrincipalDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 

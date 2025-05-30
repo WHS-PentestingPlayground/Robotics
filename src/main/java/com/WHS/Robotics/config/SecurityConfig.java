@@ -47,6 +47,8 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/board/**").authenticated() // 인증만 되면 접근 가능
+                        .requestMatchers("/mypage/**").authenticated() // 인증만 되면 접근 가능
+                        .requestMatchers("/mypage/password/**").hasAnyRole("BUSINESS", "ADMIN") // BUSINESS, ADMIN 권한만 접근 가능 (계층 구조 설정 시 수정 가능)
                         .requestMatchers("/admin/**").hasRole("ADMIN") // ADMIN 권한만 접근 가능
                         .anyRequest().permitAll() // 나머지 요청은 모두 허용
                 )

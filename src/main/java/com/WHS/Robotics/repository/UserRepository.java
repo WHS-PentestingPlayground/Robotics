@@ -92,6 +92,18 @@ public class UserRepository {
         return null;
     }
 
+    // 비밀번호 업데이트 (username으로 식별)
+    public boolean updatePassword(String username, String newEncodedPassword) throws SQLException {
+        String sql = "UPDATE USERS SET PASSWORD = ? WHERE USERNAME = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, newEncodedPassword);
+            pstmt.setString(2, username);
+            int rowsUpdated = pstmt.executeUpdate();
+            return rowsUpdated > 0; // 업데이트된 행이 있으면 true 반환
+        }
+    }
+
     // ResultSet -> User 매핑
     private User mapRowToUser(ResultSet rs) throws SQLException {
         User user = new User();

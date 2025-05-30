@@ -78,19 +78,63 @@ public class UserController {
 
     // 마이페이지
     @GetMapping("/mypage")
-    public String myPage(Model model) {
+    public String myPage(Authentication authentication, Model model) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        User user = principalDetails.getUser();
+        model.addAttribute("user", user);
+        return "mypage";
+    }
+
+    // 비밀번호 변경 폼 (기업 회원 이상만 접근 가능)
+    @GetMapping("/mypage/password")
+    public String passwordChangeForm(Authentication authentication, Model model) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        User user = principalDetails.getUser();
+        model.addAttribute("user", user);
+        return "password";
+    }
+
+    // 비밀번호 변경 처리
+    @PostMapping("/mypage/password")
+    public String changePassword(Authentication authentication,
+                               @RequestParam String currentPassword,
+                               @RequestParam String newPassword,
+                               @RequestParam String confirmPassword,
+                               Model model) {
         try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null && auth.isAuthenticated()) {
-                PrincipalDetails principalDetails = (PrincipalDetails) auth.getPrincipal();
-                User user = principalDetails.getUser();
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            User user = principalDetails.getUser();
+
+            // 새 비밀번호와 확인 비밀번호가 일치하는지 확인
+            if (!newPassword.equals(confirmPassword)) {
+                model.addAttribute("error", "새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
                 model.addAttribute("user", user);
-                return "mypage";
+                return "password"; // 비밀번호 변경 폼 반환
             }
-            return "redirect:/login";
+
+            // 현재 비밀번호가 올바른지 확인
+            if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+                model.addAttribute("error", "현재 비밀번호가 올바르지 않습니다.");
+                model.addAttribute("user", user);
+                return "password"; // 비밀번호 변경 폼 반환
+            }
+
+            // 새 비밀번호 암호화
+            String encodedNewPassword = passwordEncoder.encode(newPassword);
+
+            // 비밀번호 업데이트
+            userService.updatePassword(user.getUsername(), encodedNewPassword);
+
+            model.addAttribute("success", "비밀번호가 성공적으로 변경되었습니다.");
+            return "redirect:/mypage";
+
         } catch (Exception e) {
-            model.addAttribute("error", "사용자 정보를 불러오는 중 오류가 발생했습니다.");
-            return "redirect:/login";
+            model.addAttribute("error", "비밀번호 변경 중 오류가 발생했습니다: " + e.getMessage());
+            // 오류 발생 시 사용자 정보 다시 추가
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            User user = principalDetails.getUser();
+            model.addAttribute("user", user);
+            return "password"; // 비밀번호 변경 폼 반환
         }
     }
 }

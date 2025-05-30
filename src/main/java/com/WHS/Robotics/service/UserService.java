@@ -62,4 +62,27 @@ public class UserService {
         }
         return null;
     }
+  
+    // 비밀번호 업데이트 메서드 (기업 회원 이상 전용)
+    public void updatePassword(String username, String newEncodedPassword) throws Exception {
+        try {
+            // 사용자 존재 여부 확인
+            User user = userRepository.findByUsername(username);
+            if (user == null) {
+                throw new Exception("사용자를 찾을 수 없습니다.");
+            }
+
+            // 기업 회원 이상인지 확인 (business_token 검증)
+            if (user.getBusiness_token() == null || user.getBusiness_token().trim().isEmpty()) {
+                throw new Exception("기업 회원 이상만 비밀번호 변경이 가능합니다.");
+            }
+
+            // 비밀번호 업데이트
+            userRepository.updatePassword(username, newEncodedPassword);
+
+        } catch (SQLException e) {
+            throw new Exception("데이터베이스 오류로 비밀번호 변경에 실패했습니다: " + e.getMessage());
+        } catch (Exception e) {
+            throw e; // 다른 예외는 그대로 전달
+        }
 } 

@@ -1,0 +1,91 @@
+.header {
+    background: #003366;
+    color: #fff;
+    padding: 20px 0 12px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.header-logo {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.header-logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.header-logo-emoji {
+    font-size: 2em;
+    margin-right: 8px;
+}
+
+.header-logo-text {
+    font-size: 1.25em;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #fff;
+}
+
+.header-main-menu {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+}
+
+.header-menu-link {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.25em;
+    padding: 8px 18px;
+    letter-spacing: 0.5px;
+}
+
+.header-user-menu {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.header-user-link {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95em;
+    padding: 4px 10px;
+}
+
+.header-username {
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.95em;
+    padding: 4px 10px;
+}
+
+.header-logout-form {
+    margin: 0;
+    padding: 0;
+}
+
+.header-logout-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.95em;
+    padding: 4px 10px;
+    cursor: pointer;
+} 

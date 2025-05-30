@@ -45,7 +45,6 @@
             </div>
 
             <div class="mypage-actions">
-                <button class="action-btn" onclick="location.href='/mypage/edit'">정보 수정</button>
                 <button class="action-btn" onclick="location.href='/mypage/password'">비밀번호 변경</button>
             </div>
         </div>

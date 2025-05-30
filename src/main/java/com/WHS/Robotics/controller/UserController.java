@@ -68,72 +68,32 @@ public class UserController {
 
     // 마이페이지
     @GetMapping("/mypage")
-    public String myPage(Model model) {
-        try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null && auth.isAuthenticated()) {
-                PrincipalDetails principalDetails = (PrincipalDetails) auth.getPrincipal();
-                User user = principalDetails.getUser();
-                model.addAttribute("user", user);
-                return "mypage";
-            }
-            return "redirect:/login";
-        } catch (Exception e) {
-            model.addAttribute("error", "사용자 정보를 불러오는 중 오류가 발생했습니다.");
-            return "redirect:/login";
-        }
+    public String myPage(Authentication authentication, Model model) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        User user = principalDetails.getUser();
+        model.addAttribute("user", user);
+        return "mypage";
     }
 
     // 비밀번호 변경 폼 (기업 회원 이상만 접근 가능)
     @GetMapping("/mypage/password")
-    public String passwordChangeForm(Model model) {
-        try {
-            // 현재 로그인된 사용자 정보 가져오기
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth == null || !auth.isAuthenticated()) {
-                return "redirect:/login";
-            }
-
-            PrincipalDetails principalDetails = (PrincipalDetails) auth.getPrincipal();
-            User user = principalDetails.getUser();
-
-            // 기업 회원 이상인지 확인 (business_token이 있는지 체크)
-            if (user.getBusiness_token() == null || user.getBusiness_token().trim().isEmpty()) {
-                model.addAttribute("error", "기업 회원 이상만 비밀번호 변경이 가능합니다.");
-                return "redirect:/mypage";
-            }
-
-            // 사용자 정보를 모델에 추가 (폼에서 사용할 수 있도록)
-            model.addAttribute("user", user);
-            return "password"; // 비밀번호 변경 폼 JSP 페이지
-
-        } catch (Exception e) {
-            model.addAttribute("error", "비밀번호 변경 폼을 불러오는 중 오류가 발생했습니다.");
-            return "redirect:/mypage";
-        }
+    public String passwordChangeForm(Authentication authentication, Model model) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        User user = principalDetails.getUser();
+        model.addAttribute("user", user);
+        return "password";
     }
 
-    // 비밀번호 변경 처리 (기업 회원 이상만 가능)
+    // 비밀번호 변경 처리
     @PostMapping("/mypage/password")
-    public String changePassword(@RequestParam String currentPassword,
+    public String changePassword(Authentication authentication,
+                               @RequestParam String currentPassword,
                                @RequestParam String newPassword,
                                @RequestParam String confirmPassword,
                                Model model) {
         try {
-            // 현재 로그인된 사용자 정보 가져오기
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth == null || !auth.isAuthenticated()) {
-                return "redirect:/login";
-            }
-
-            PrincipalDetails principalDetails = (PrincipalDetails) auth.getPrincipal();
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
             User user = principalDetails.getUser();
-
-            // 기업 회원 이상인지 확인 (business_token이 있는지 체크)
-            if (user.getBusiness_token() == null || user.getBusiness_token().trim().isEmpty()) {
-                model.addAttribute("error", "기업 회원 이상만 비밀번호 변경이 가능합니다.");
-                return "redirect:/mypage";
-            }
 
             // 새 비밀번호와 확인 비밀번호가 일치하는지 확인
             if (!newPassword.equals(confirmPassword)) {
@@ -160,15 +120,10 @@ public class UserController {
 
         } catch (Exception e) {
             model.addAttribute("error", "비밀번호 변경 중 오류가 발생했습니다: " + e.getMessage());
-            // 사용자 정보 다시 로드해서 폼에 전달
-            try {
-                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                PrincipalDetails principalDetails = (PrincipalDetails) auth.getPrincipal();
-                User user = principalDetails.getUser();
-                model.addAttribute("user", user);
-            } catch (Exception ex) {
-                return "redirect:/mypage";
-            }
+            // 오류 발생 시 사용자 정보 다시 추가
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            User user = principalDetails.getUser();
+            model.addAttribute("user", user);
             return "password"; // 비밀번호 변경 폼 반환
         }
     }

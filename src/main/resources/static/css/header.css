@@ -11,6 +11,8 @@
     align-items: center;
     max-width: 1100px;
     margin: 0 auto;
+    min-height: 70px;
+    flex-wrap: nowrap;
 }
 
 .header-logo {
@@ -41,7 +43,7 @@
     flex: 1;
     display: flex;
     justify-content: center;
-    gap: 32px;
+    gap: 18px;
 }
 
 .header-menu-link {
@@ -49,8 +51,9 @@
     text-decoration: none;
     font-weight: 700;
     font-size: 1.25em;
-    padding: 8px 18px;
+    padding: 8px 12px;
     letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 .header-user-menu {

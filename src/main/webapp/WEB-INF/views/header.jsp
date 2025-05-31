@@ -13,6 +13,7 @@
         <!-- 가운데: 메인 메뉴 -->
         <div class="header-main-menu">
             <a href="/about" class="header-menu-link">사업소개</a>
+            <a href="/products" class="header-menu-link">제품소개</a>
             <a href="/board/posts" class="header-menu-link">게시판</a>
         </div>
         <!-- 오른쪽: 유저 메뉴 (Spring Security 기반 동적 표시) -->

@@ -1,14 +1,27 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <h2>${board.title}</h2>
 <p>${board.content}</p>
 <p>작성자 ID: ${board.userId} / ${board.createdAt}</p>
 
-<form action="/board/deletePost" method="post">
-  <input type="hidden" name="id" value="${board.id}" />
-  <button type="submit">게시글 삭제</button>
-</form>
+<c:choose>
+  <c:when test="${board.notice}">
+    <sec:authorize access="hasRole('ADMIN')">
+      <form action="/board/deletePost" method="post">
+        <input type="hidden" name="id" value="${board.id}" />
+        <button type="submit">게시글 삭제</button>
+      </form>
+    </sec:authorize>
+  </c:when>
+  <c:otherwise>
+    <form action="/board/deletePost" method="post">
+      <input type="hidden" name="id" value="${board.id}" />
+      <button type="submit">게시글 삭제</button>
+    </form>
+  </c:otherwise>
+</c:choose>
 
 <h3>댓글</h3>
 <ul>

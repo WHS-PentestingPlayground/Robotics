@@ -2,15 +2,24 @@ package com.WHS.Robotics.controller;
 
 import com.WHS.Robotics.entity.Board;
 import com.WHS.Robotics.entity.Comment;
+import com.WHS.Robotics.entity.File;
 import com.WHS.Robotics.repository.BoardRepository;
 import com.WHS.Robotics.repository.CommentRepository;
+import com.WHS.Robotics.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
+import java.sql.SQLException;
 
 @Controller
 public class BoardController {
@@ -20,6 +29,11 @@ public class BoardController {
 
     @Autowired
     private CommentRepository commentRepository;
+
+    @Autowired
+    private FileRepository fileRepository;
+
+    private final String UPLOAD_DIR = "uploads/";
 
     // 게시글 목록 페이지
     @GetMapping("/board/posts")
@@ -86,6 +100,61 @@ public class BoardController {
                                 @RequestParam int boardId) throws Exception {
         commentRepository.deleteById(commentId);
         return "redirect:/board/post?id=" + boardId;
+    }
+
+    // 공지사항 작성 페이지
+    @GetMapping("/admin/notice")
+    public String noticeForm() {
+        return "notice";
+    }
+
+    // 공지사항 작성
+    @PostMapping("/admin/notice")
+    public String writeNotice(@RequestParam("title") String title,
+                            @RequestParam("content") String content,
+                            @RequestParam("userId") int userId,
+                            @RequestParam(value = "file", required = false) MultipartFile file) throws SQLException {
+        // 게시글 저장
+        Board board = new Board();
+        board.setTitle(title);
+        board.setContent(content);
+        board.setUserId(userId);
+        board.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        board.setNotice(true);  // 공지사항으로 설정
+        boardRepository.save(board);
+        
+        // 파일이 있다면 저장
+        if (file != null && !file.isEmpty()) {
+            try {
+                // 업로드 디렉토리 생성
+                Path uploadPath = Paths.get(UPLOAD_DIR);
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+                
+                // 파일명 중복 방지를 위해 UUID 사용
+                String originalFilename = file.getOriginalFilename();
+                String storedFilename = UUID.randomUUID().toString() + "_" + originalFilename;
+                
+                // 파일 저장
+                Path filePath = uploadPath.resolve(storedFilename);
+                Files.copy(file.getInputStream(), filePath);
+                
+                // DB에 파일 정보 저장
+                File fileEntity = new File();
+                fileEntity.setBoardId((long) board.getId());
+                fileEntity.setFileName(originalFilename);
+                fileEntity.setFilePath(storedFilename);
+                fileEntity.setUploadedAt(new Timestamp(System.currentTimeMillis()));
+                fileEntity.setUploadedBy((long) userId);
+                fileRepository.save(fileEntity);
+                
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return "redirect:/board/posts";
     }
 }
 

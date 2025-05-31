@@ -22,19 +22,20 @@ public class BoardRepository {
     }
 
     public void save(Board board) throws SQLException {
-        String sql = "INSERT INTO BOARDS (TITLE, CONTENT, USER_ID, CREATED_AT) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO BOARDS (TITLE, CONTENT, USER_ID, CREATED_AT, IS_NOTICE) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, board.getTitle());
             pstmt.setString(2, board.getContent());
             pstmt.setInt(3, board.getUserId());
             pstmt.setTimestamp(4, board.getCreatedAt());
+            pstmt.setInt(5, board.isNotice() ? 1 : 0);
             pstmt.executeUpdate();
         }
     }
 
     public List<Board> findAll() throws SQLException {
-        String sql = "SELECT * FROM BOARDS ORDER BY ID DESC";
+        String sql = "SELECT * FROM BOARDS ORDER BY IS_NOTICE DESC, ID DESC";
         List<Board> boards = new ArrayList<>();
         try (Connection conn = dataSource.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -69,6 +70,17 @@ public class BoardRepository {
         }
     }
 
+    public void update(Board board) throws SQLException {
+        String sql = "UPDATE BOARDS SET TITLE = ?, CONTENT = ? WHERE ID = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, board.getTitle());
+            pstmt.setString(2, board.getContent());
+            pstmt.setInt(3, board.getId());
+            pstmt.executeUpdate();
+        }
+    }
+
     private Board mapRowToBoard(ResultSet rs) throws SQLException {
         Board board = new Board();
         board.setId(rs.getInt("ID"));
@@ -76,6 +88,7 @@ public class BoardRepository {
         board.setContent(rs.getString("CONTENT"));
         board.setUserId(rs.getInt("USER_ID"));
         board.setCreatedAt(rs.getTimestamp("CREATED_AT"));
+        board.setNotice(rs.getInt("IS_NOTICE") == 1);
         return board;
     }
 }

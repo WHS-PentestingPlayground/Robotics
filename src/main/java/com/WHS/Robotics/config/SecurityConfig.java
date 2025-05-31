@@ -11,11 +11,16 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.WHS.Robotics.config.auth.PrincipalDetailsService;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // secured, preAuthorize, postAuthorize 어노테이션 활성화
 public class SecurityConfig {
+
+    @Autowired
+    private PrincipalDetailsService principalDetailsService;
 
     @Bean 
     public PasswordEncoder encodePwd() {
@@ -57,8 +62,10 @@ public class SecurityConfig {
                         .loginProcessingUrl("/login") // 로그인 폼의 action 경로
                         .defaultSuccessUrl("/") // 로그인 성공 시 리디렉션될 기본 URL
                         .failureUrl("/login?error=true") // 로그인 실패 시 쿼리 파라미터 전달
+                )
+                .userDetailsService(principalDetailsService);
+                        
                 );
-
         return http.build();
     }
 }

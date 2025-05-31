@@ -7,18 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 import com.WHS.Robotics.repository.UserRepository;
-import com.WHS.Robotics.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.WHS.Robotics.service.UserService;
-import jakarta.servlet.http.HttpSession;
+import com.WHS.Robotics.entity.User;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import java.sql.SQLException;
 import com.WHS.Robotics.config.auth.PrincipalDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Controller
 @RequestMapping
@@ -26,9 +20,9 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-    @Autowired
     private UserService userService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // /login, /logout은 Spring Security에서 기본적으로 지원
     // 로그인 폼
@@ -47,9 +41,27 @@ public class UserController {
     @PostMapping("/register")
     public String register(@RequestParam String username,
                           @RequestParam String password,
+                          @RequestParam String passwordConfirm,
                           @RequestParam String role,
                           Model model) {
         try {
+            // 아이디 규칙 체크: 4~16자리, 영문/숫자만 허용
+            String usernameError = userService.validateUsername(username);
+            if (usernameError != null) {
+                model.addAttribute("error", usernameError);
+                return "register";
+            }
+            // 비밀번호 규칙 체크: 8~16자리, 영문 대소문자, 숫자, 특수문자 중 2가지 이상 조합
+            String passwordError = userService.validatePassword(password);
+            if (passwordError != null) {
+                model.addAttribute("error", passwordError);
+                return "register";
+            }
+            // 비밀번호 확인 체크
+            if (!password.equals(passwordConfirm)) {
+                model.addAttribute("error", "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+                return "register";
+            }
             // 중복 체크
             if (userRepository.findByUsername(username) != null) {
                 model.addAttribute("error", "이미 존재하는 아이디입니다.");
@@ -68,19 +80,63 @@ public class UserController {
 
     // 마이페이지
     @GetMapping("/mypage")
-    public String myPage(Model model) {
+    public String myPage(Authentication authentication, Model model) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        User user = principalDetails.getUser();
+        model.addAttribute("user", user);
+        return "mypage";
+    }
+
+    // 비밀번호 변경 폼 (기업 회원 이상만 접근 가능)
+    @GetMapping("/mypage/password")
+    public String passwordChangeForm(Authentication authentication, Model model) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        User user = principalDetails.getUser();
+        model.addAttribute("user", user);
+        return "password";
+    }
+
+    // 비밀번호 변경 처리
+    @PostMapping("/mypage/password")
+    public String changePassword(Authentication authentication,
+                               @RequestParam String currentPassword,
+                               @RequestParam String newPassword,
+                               @RequestParam String confirmPassword,
+                               Model model) {
         try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null && auth.isAuthenticated()) {
-                PrincipalDetails principalDetails = (PrincipalDetails) auth.getPrincipal();
-                User user = principalDetails.getUser();
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            User user = principalDetails.getUser();
+
+            // 새 비밀번호와 확인 비밀번호가 일치하는지 확인
+            if (!newPassword.equals(confirmPassword)) {
+                model.addAttribute("error", "새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
                 model.addAttribute("user", user);
-                return "mypage";
+                return "password"; // 비밀번호 변경 폼 반환
             }
-            return "redirect:/login";
+
+            // 현재 비밀번호가 올바른지 확인
+            if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+                model.addAttribute("error", "현재 비밀번호가 올바르지 않습니다.");
+                model.addAttribute("user", user);
+                return "password"; // 비밀번호 변경 폼 반환
+            }
+
+            // 새 비밀번호 암호화
+            String encodedNewPassword = passwordEncoder.encode(newPassword);
+
+            // 비밀번호 업데이트
+            userService.updatePassword(user.getUsername(), encodedNewPassword);
+
+            model.addAttribute("success", "비밀번호가 성공적으로 변경되었습니다.");
+            return "redirect:/mypage";
+
         } catch (Exception e) {
-            model.addAttribute("error", "사용자 정보를 불러오는 중 오류가 발생했습니다.");
-            return "redirect:/login";
+            model.addAttribute("error", "비밀번호 변경 중 오류가 발생했습니다: " + e.getMessage());
+            // 오류 발생 시 사용자 정보 다시 추가
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            User user = principalDetails.getUser();
+            model.addAttribute("user", user);
+            return "password"; // 비밀번호 변경 폼 반환
         }
     }
 }

@@ -7,8 +7,8 @@
 <body>
 <h2>로그인</h2>
 <%-- 로그인 실패 시 에러 메시지 표시 --%>
-<% if (request.getAttribute("error") != null) { %>
-    <div style="color:red;"><%= request.getAttribute("error") %></div>
+<% if (request.getParameter("error") != null) { %>
+    <div style="color:red;">아이디 또는 비밀번호가 올바르지 않습니다.</div>
 <% } %>
 <form action="/login" method="post">
     <label for="username">아이디:</label>

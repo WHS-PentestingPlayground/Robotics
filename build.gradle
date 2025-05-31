@@ -37,6 +37,8 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	implementation 'org.springframework.boot:spring-boot-devtools'
+	//<sec:authorize 같은 것을 JSP에서 사용하기 위해서, 아래와 같은 의존성 추가했습니다 
+	implementation 'org.springframework.security:spring-security-taglibs'
 }
 
 tasks.named('test') {

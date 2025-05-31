@@ -10,5 +10,14 @@ public class Board {
     private String content;
     private int userId;
     private Timestamp createdAt;
+    private boolean isNotice;
+
+    public boolean isNotice() {
+        return isNotice;
+    }
+
+    public void setNotice(boolean isNotice) {
+        this.isNotice = isNotice;
+    }
 }
 

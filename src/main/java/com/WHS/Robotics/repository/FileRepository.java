@@ -42,7 +42,7 @@ public class FileRepository {
         );
     }
     
-    public List<File> findByBoardId(Long boardId) throws SQLException {
+    public List<File> findByBoardId(Long boardId) {
         String sql = "SELECT * FROM FILES WHERE BOARD_ID = ?";
         return jdbcTemplate.query(sql, rowMapper, boardId);
     }

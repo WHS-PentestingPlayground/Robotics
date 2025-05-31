@@ -65,7 +65,6 @@ public class SecurityConfig {
                 )
                 .userDetailsService(principalDetailsService);
                         
-                );
         return http.build();
     }
 }

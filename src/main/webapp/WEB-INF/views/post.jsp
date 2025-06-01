@@ -14,7 +14,9 @@
     <div class="card" style="padding:2rem; margin-bottom:2rem;">
         <h2>${board.title}</h2>
         <p>${board.content}</p>
-        <p style="color:#888; font-size:0.95em;">작성자 ID: ${board.userId} / ${board.createdAt}</p>
+        <p style="color:#888; font-size:0.95em;">
+            작성자: ${username} / ${board.createdAt}
+        </p>
         <div style="margin-top:1.5rem;">
             <c:choose>
                 <c:when test="${board.notice}">
@@ -39,7 +41,7 @@
         <ul style="list-style:none; padding:0;">
             <c:forEach var="comment" items="${comments}">
                 <li style="margin-bottom:0.7rem;">
-                    ${comment.content} (작성자: ${comment.userId}, ${comment.createdAt})
+                    ${comment.content} (작성자: ${commentUsernames[comment.id]}, ${comment.createdAt})
                     <form action="/deleteComment" method="post" style="display:inline; margin-left:8px;">
                         <input type="hidden" name="commentId" value="${comment.id}" />
                         <input type="hidden" name="boardId" value="${board.id}" />
@@ -51,7 +53,10 @@
         <h4 style="margin-top:2rem;">댓글 작성</h4>
         <form action="/comment" method="post" style="margin-top:1rem;">
             <input type="hidden" name="boardId" value="${board.id}" />
-            <input type="hidden" name="userId" value="1" /> <!-- 세션 기반으로 수정 가능 -->
+            <input type="hidden" name="userId" value="${loginUserId}" />
+            <div style="margin-bottom:10px; color:#555; font-size:0.97em;">
+                작성자: <b>${loginUsername}</b>
+            </div>
             <textarea name="content" style="width:100%; min-height:60px; border-radius:6px; border:1px solid #ddd; margin-bottom:10px; padding:8px;"></textarea><br>
             <button type="submit" class="main-btn">댓글 작성</button>
         </form>

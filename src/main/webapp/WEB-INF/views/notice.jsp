@@ -26,8 +26,10 @@
                         <input type="file" id="file" name="file">
                     </div>
                     <div style="flex:1;">
-                        <label for="userId">작성자 ID:</label>
-                        <input type="text" id="userId" name="userId" value="1" required style="width:100%; padding:10px; border-radius:6px; border:1px solid #ddd;">
+                        <input type="hidden" id="userId" name="userId" value="${loginUserId}" />
+                        <div style="color:#555; font-size:0.97em;">
+                            작성자: <b>${loginUsername}</b>
+                        </div>
                     </div>
                 </div>
 

@@ -16,6 +16,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+import com.WHS.Robotics.repository.FileRepository;
+import jakarta.servlet.ServletContext;
+import java.io.File;
+import java.io.IOException;
 
 @Controller
 public class BoardController {
@@ -30,7 +34,11 @@ public class BoardController {
     @Autowired
     private BoardService boardService;
 
-    private final String UPLOAD_DIR = "uploads/";
+    @Autowired
+    private FileRepository fileRepository;
+
+    @Autowired
+    private ServletContext servletContext;
 
     // 게시글 목록 페이지
     @GetMapping("/board/posts")
@@ -67,6 +75,13 @@ public class BoardController {
         model.addAttribute("comments", comments);
         model.addAttribute("username", postWriterUsername); // 게시글 작성자 username
         model.addAttribute("commentUsernames", commentUsernames);
+        // 첨부 파일 정보 추가
+        List<com.WHS.Robotics.entity.File> attachedFiles = fileRepository.findByBoardId((long) id);
+        System.out.println("첨부파일 개수: " + attachedFiles.size());
+        if (!attachedFiles.isEmpty()) {
+            System.out.println("첫 파일명: " + attachedFiles.get(0).getFileName());
+        }
+        model.addAttribute("attachedFiles", attachedFiles);
         return "post";
     }
 
@@ -151,7 +166,7 @@ public class BoardController {
                               @RequestParam("content") String content,
                               @RequestParam("userId") int userId,
                               @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
-        boardService.writeNotice(title, content, userId, file, UPLOAD_DIR);
+        boardService.writeNotice(title, content, userId, file, servletContext);
         return "redirect:/board/posts";
     }
 
@@ -175,6 +190,32 @@ public class BoardController {
                            @RequestParam String content,
                            @RequestParam int userId) throws Exception {
         boardService.editPost(id, title, content, userId);
+        return "redirect:/board/post?id=" + id;
+    }
+
+    // 공지사항 수정 폼
+    @GetMapping("/board/editNotice")
+    public String editNoticeForm(@RequestParam int id, Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) throws Exception {
+        Board notice = boardRepository.findById(id);
+        int loginUserId = principalDetails.getUser().getId();
+        String loginUsername = principalDetails.getUser().getUsername();
+        model.addAttribute("notice", notice);
+        model.addAttribute("loginUserId", loginUserId);
+        model.addAttribute("loginUsername", loginUsername);
+        // 첨부파일 정보 추가
+        java.util.List<com.WHS.Robotics.entity.File> attachedFiles = fileRepository.findByBoardId((long) id);
+        model.addAttribute("attachedFiles", attachedFiles);
+        return "editNotice";
+    }
+
+    // 공지사항 수정 처리
+    @PreAuthorize("hasRole('ADMIN') or @boardSecurity.isPostOwner(#id, principal.user.id)")
+    @PostMapping("/board/editNotice")
+    public String editNotice(@RequestParam int id,
+                            @RequestParam String title,
+                            @RequestParam String content,
+                            @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
+        boardService.editNotice(id, title, content, file, servletContext);
         return "redirect:/board/post?id=" + id;
     }
 }

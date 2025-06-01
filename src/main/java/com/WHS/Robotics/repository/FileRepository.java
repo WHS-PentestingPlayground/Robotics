@@ -46,4 +46,9 @@ public class FileRepository {
         String sql = "SELECT * FROM FILES WHERE BOARD_ID = ?";
         return jdbcTemplate.query(sql, rowMapper, boardId);
     }
+    
+    public void deleteByBoardId(Long boardId) {
+        String sql = "DELETE FROM FILES WHERE BOARD_ID = ?";
+        jdbcTemplate.update(sql, boardId);
+    }
 } 

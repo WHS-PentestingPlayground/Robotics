@@ -8,32 +8,32 @@
     <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
-<div class="container" style="max-width:480px; margin:3rem auto;">
-    <div class="card" style="padding:2rem;">
-        <h2 style="text-align:center;">회원가입</h2>
+<div class="container container-register">
+    <div class="card card-register">
+        <h2 class="text-center">회원가입</h2>
         <c:if test="${not empty error}">
-            <div style="color:#e74c3c; margin-bottom:1rem; text-align:center;">${error}</div>
+            <div class="text-error">${error}</div>
         </c:if>
         <form action="/register" method="post">
             <label for="username">아이디:</label>
-            <input type="text" id="username" name="username" required style="width:100%; padding:10px; border-radius:6px; border:1px solid #ddd; margin-bottom:1rem;">
+            <input type="text" id="username" name="username" required class="input-full">
 
             <label for="password">비밀번호:</label>
-            <input type="password" id="password" name="password" required style="width:100%; padding:10px; border-radius:6px; border:1px solid #ddd; margin-bottom:1rem;">
+            <input type="password" id="password" name="password" required class="input-full">
 
             <label for="passwordConfirm">비밀번호 확인:</label>
-            <input type="password" id="passwordConfirm" name="passwordConfirm" required style="width:100%; padding:10px; border-radius:6px; border:1px solid #ddd; margin-bottom:1rem;">
+            <input type="password" id="passwordConfirm" name="passwordConfirm" required class="input-full">
 
             <label for="role">회원 유형:</label>
-            <select id="role" name="role" required style="width:100%; padding:10px; border-radius:6px; border:1px solid #ddd; margin-bottom:1.5rem;">
+            <select id="role" name="role" required class="input-full input-mb">
                 <option value="USER">일반</option>
                 <option value="BUSINESS">기업</option>
                 <option value="ADMIN">관리자</option>
             </select>
 
-            <button type="submit" class="main-btn" style="width:100%;">회원가입</button>
+            <button type="submit" class="main-btn btn-full">회원가입</button>
         </form>
-        <p style="text-align:center; margin-top:1.5rem;"><a href="/login" style="color:#003366; text-decoration:underline;">로그인으로 돌아가기</a></p>
+        <p class="text-center mt-1-5"><a href="/login" class="link-blue">로그인으로 돌아가기</a></p>
     </div>
 </div>
 </body>

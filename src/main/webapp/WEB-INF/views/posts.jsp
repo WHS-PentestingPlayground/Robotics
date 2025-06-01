@@ -10,41 +10,37 @@
     <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
-<div class="container" style="max-width:900px; margin:2rem auto;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+<div class="container container-posts">
+    <div class="flex-row justify-between align-center mb-1-5">
         <h1>게시판</h1>
         <div>
             <sec:authorize access="hasRole('ADMIN')">
-                <a href="/admin/notice" class="main-btn" style="margin-right:8px;">공지사항 작성</a>
+                <a href="/admin/notice" class="main-btn mr-8">공지사항 작성</a>
             </sec:authorize>
             <a href="/board/newPost" class="main-btn">새 글 작성</a>
         </div>
     </div>
-    <div class="card" style="padding:2rem; margin-bottom:2rem;">
+    <div class="card card-posts mb-2">
         <h2>[공지사항]</h2>
-        <div style="display:flex; flex-direction:column; gap:16px;">
+        <div class="flex-col gap-16">
             <c:forEach var="post" items="${boards}">
                 <c:if test="${post.notice}">
-                    <div style="background:#eaf3fb; border-radius:10px; box-shadow:0 1px 6px rgba(0,0,0,0.06); padding:18px 20px;">
-                        <a href="/board/post?id=${post.id}" style="color:#003366; font-weight:600; text-decoration:none; font-size:1.1em;">${post.title}</a>
-                        <div style="color:#4a5a6a; font-size:0.97em; margin-top:6px;">
-                            작성자: ${userNamesByBoardId[post.id]}
-                        </div>
+                    <div class="notice-box">
+                        <a href="/board/post?id=${post.id}" class="link-blue notice-title">${post.title}</a>
+                        <div class="notice-author">작성자: ${userNamesByBoardId[post.id]}</div>
                     </div>
                 </c:if>
             </c:forEach>
         </div>
     </div>
-    <div class="card" style="padding:2rem;">
+    <div class="card card-posts">
         <h2>[게시글 목록]</h2>
-        <div style="display:flex; flex-direction:column; gap:16px;">
+        <div class="flex-col gap-16">
             <c:forEach var="post" items="${boards}">
                 <c:if test="${!post.notice}">
-                    <div style="background:#fff; border-radius:10px; box-shadow:0 1px 6px rgba(0,0,0,0.08); padding:18px 20px;">
-                        <a href="/board/post?id=${post.id}" style="color:#222; text-decoration:none; font-size:1.1em;">${post.title}</a>
-                        <div style="color:#4a5a6a; font-size:0.97em; margin-top:6px;">
-                            작성자: ${userNamesByBoardId[post.id]}
-                        </div>
+                    <div class="post-box">
+                        <a href="/board/post?id=${post.id}" class="post-title">${post.title}</a>
+                        <div class="post-author">작성자: ${userNamesByBoardId[post.id]}</div>
                     </div>
                 </c:if>
             </c:forEach>

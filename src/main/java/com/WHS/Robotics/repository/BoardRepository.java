@@ -24,13 +24,19 @@ public class BoardRepository {
     public void save(Board board) throws SQLException {
         String sql = "INSERT INTO BOARDS (TITLE, CONTENT, USER_ID, CREATED_AT, IS_NOTICE) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql, new String[] {"ID"})) {
             pstmt.setString(1, board.getTitle());
             pstmt.setString(2, board.getContent());
             pstmt.setInt(3, board.getUserId());
             pstmt.setTimestamp(4, board.getCreatedAt());
             pstmt.setInt(5, board.isNotice() ? 1 : 0);
             pstmt.executeUpdate();
+            try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    int generatedId = rs.getInt(1);
+                    board.setId(generatedId);
+                }
+            }
         }
     }
 

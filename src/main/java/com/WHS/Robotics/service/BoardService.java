@@ -20,6 +20,7 @@ import java.util.UUID;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import jakarta.servlet.ServletContext;
 
 @Service
 public class BoardService {
@@ -71,7 +72,7 @@ public class BoardService {
         return "unknown";
     }
 
-    public void writeNotice(String title, String content, int userId, MultipartFile file, String uploadDir) throws Exception {
+    public void writeNotice(String title, String content, int userId, MultipartFile file, ServletContext servletContext) throws Exception {
         // 게시글 저장
         Board board = new Board();
         board.setTitle(title);
@@ -83,25 +84,16 @@ public class BoardService {
 
         // 파일이 있다면 저장
         if (file != null && !file.isEmpty()) {
-            // 업로드 디렉토리 생성
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-            // 파일명 중복 방지를 위해 UUID 사용
+            String uploadDir = servletContext.getRealPath("/uploads/");
+            java.io.File dir = new java.io.File(uploadDir);
+            if (!dir.exists()) dir.mkdirs();
             String originalFilename = file.getOriginalFilename();
-            String storedFilename = UUID.randomUUID().toString() + "_" + originalFilename;
-
-            // 파일 저장
-            Path filePath = uploadPath.resolve(storedFilename);
-            Files.copy(file.getInputStream(), filePath);
-
-            // DB에 파일 정보 저장
-            File fileEntity = new File();
+            java.io.File dest = new java.io.File(dir, originalFilename);
+            file.transferTo(dest);
+            com.WHS.Robotics.entity.File fileEntity = new com.WHS.Robotics.entity.File();
             fileEntity.setBoardId((long) board.getId());
             fileEntity.setFileName(originalFilename);
-            fileEntity.setFilePath(storedFilename);
+            fileEntity.setFilePath(originalFilename);
             fileEntity.setUploadedAt(new Timestamp(System.currentTimeMillis()));
             fileEntity.setUploadedBy((long) userId);
             fileRepository.save(fileEntity);
@@ -130,6 +122,40 @@ public class BoardService {
             board.setContent(content);
             board.setCreatedAt(new Timestamp(System.currentTimeMillis()));
             boardRepository.update(board);
+        }
+    }
+
+    // 공지사항 수정 (파일 교체 지원)
+    public void editNotice(int id, String title, String content, MultipartFile file, ServletContext servletContext) throws Exception {
+        Board board = boardRepository.findById(id);
+        if (board != null && board.isNotice()) {
+            board.setTitle(title);
+            board.setContent(content);
+            board.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            boardRepository.update(board);
+
+            // 파일 교체 로직
+            if (file != null && !file.isEmpty()) {
+                // 기존 파일 삭제 (DB + 실제 파일)
+                java.util.List<File> oldFiles = fileRepository.findByBoardId((long) id);
+                String uploadDir = servletContext.getRealPath("/uploads/");
+                for (File oldFile : oldFiles) {
+                    java.io.File f = new java.io.File(uploadDir, oldFile.getFilePath());
+                    if (f.exists()) f.delete();
+                }
+                fileRepository.deleteByBoardId((long) id);
+                // 새 파일 저장
+                String originalFilename = file.getOriginalFilename();
+                java.io.File dest = new java.io.File(uploadDir, originalFilename);
+                file.transferTo(dest);
+                File fileEntity = new File();
+                fileEntity.setBoardId((long) id);
+                fileEntity.setFileName(originalFilename);
+                fileEntity.setFilePath(originalFilename);
+                fileEntity.setUploadedAt(new Timestamp(System.currentTimeMillis()));
+                fileEntity.setUploadedBy((long) board.getUserId());
+                fileRepository.save(fileEntity);
+            }
         }
     }
 } 

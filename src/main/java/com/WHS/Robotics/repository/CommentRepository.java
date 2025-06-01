@@ -57,6 +57,31 @@ public class CommentRepository {
         }
     }
 
+    public Comment findById(int id) throws SQLException {
+        String sql = "SELECT * FROM COMMENTS WHERE ID = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapRowToComment(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    public void updateContent(int id, String content) throws SQLException {
+        String sql = "UPDATE COMMENTS SET CONTENT = ?, CREATED_AT = ? WHERE ID = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, content);
+            pstmt.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
+            pstmt.setInt(3, id);
+            pstmt.executeUpdate();
+        }
+    }
+
     private Comment mapRowToComment(ResultSet rs) throws SQLException {
         Comment comment = new Comment();
         comment.setId(rs.getInt("ID"));

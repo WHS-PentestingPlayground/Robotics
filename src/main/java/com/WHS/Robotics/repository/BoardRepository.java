@@ -71,12 +71,14 @@ public class BoardRepository {
     }
 
     public void update(Board board) throws SQLException {
-        String sql = "UPDATE BOARDS SET TITLE = ?, CONTENT = ? WHERE ID = ?";
+        String sql = "UPDATE BOARDS SET TITLE = ?, CONTENT = ?, CREATED_AT = ?, IS_NOTICE = ? WHERE ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, board.getTitle());
             pstmt.setString(2, board.getContent());
-            pstmt.setInt(3, board.getId());
+            pstmt.setTimestamp(3, board.getCreatedAt());
+            pstmt.setInt(4, board.isNotice() ? 1 : 0);
+            pstmt.setInt(5, board.getId());
             pstmt.executeUpdate();
         }
     }

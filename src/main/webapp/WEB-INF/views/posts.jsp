@@ -27,7 +27,9 @@
                 <c:if test="${post.notice}">
                     <div style="background:#eaf3fb; border-radius:10px; box-shadow:0 1px 6px rgba(0,0,0,0.06); padding:18px 20px;">
                         <a href="/board/post?id=${post.id}" style="color:#003366; font-weight:600; text-decoration:none; font-size:1.1em;">${post.title}</a>
-                        <div style="color:#4a5a6a; font-size:0.97em; margin-top:6px;">(작성자 ID: ${post.userId}) / ${post.createdAt}</div>
+                        <div style="color:#4a5a6a; font-size:0.97em; margin-top:6px;">
+                            작성자: ${userNamesByBoardId[post.id]}
+                        </div>
                     </div>
                 </c:if>
             </c:forEach>
@@ -40,7 +42,9 @@
                 <c:if test="${!post.notice}">
                     <div style="background:#fff; border-radius:10px; box-shadow:0 1px 6px rgba(0,0,0,0.08); padding:18px 20px;">
                         <a href="/board/post?id=${post.id}" style="color:#222; text-decoration:none; font-size:1.1em;">${post.title}</a>
-                        <div style="color:#4a5a6a; font-size:0.97em; margin-top:6px;">(작성자 ID: ${post.userId}) / ${post.createdAt}</div>
+                        <div style="color:#4a5a6a; font-size:0.97em; margin-top:6px;">
+                            작성자: ${userNamesByBoardId[post.id]}
+                        </div>
                     </div>
                 </c:if>
             </c:forEach>

@@ -18,8 +18,10 @@
             <label for="content">내용:</label>
             <textarea id="content" name="content" required style="width:100%; min-height:120px; border-radius:6px; border:1px solid #ddd; margin-bottom:1rem; padding:10px;"></textarea>
 
-            <label for="userId">작성자 ID:</label>
-            <input type="text" id="userId" name="userId" value="1" required style="width:100%; padding:10px; border-radius:6px; border:1px solid #ddd; margin-bottom:1.5rem;">
+            <input type="hidden" id="userId" name="userId" value="${loginUserId}" />
+            <div style="margin-bottom:1.5rem; color:#555; font-size:0.97em;">
+                작성자: <b>${loginUsername}</b>
+            </div>
 
             <button type="submit" class="main-btn" style="width:100%;">등록</button>
         </form>

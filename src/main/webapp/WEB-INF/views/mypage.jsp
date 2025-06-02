@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ include file="header.jsp" %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -14,14 +16,12 @@
         <div class="mypage-header">
             <h1>마이페이지</h1>
         </div>
-        
         <div class="mypage-content">
             <% if (request.getAttribute("error") != null) { %>
                 <div class="error-message">
                     <%= request.getAttribute("error") %>
                 </div>
             <% } %>
-            
             <div class="user-info">
                 <h2>회원 정보</h2>
                 <div class="info-item">
@@ -43,7 +43,6 @@
                     <span class="value">${user.created_at}</span>
                 </div>
             </div>
-
             <div class="mypage-actions">
                 <button class="action-btn" onclick="location.href='/mypage/password'">비밀번호 변경</button>
             </div>

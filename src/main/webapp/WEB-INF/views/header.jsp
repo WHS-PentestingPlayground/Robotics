@@ -23,7 +23,7 @@
                 <span class="header-username">
                     <sec:authentication property="principal.username" />님
                 </span>
-                <a href="/mypage" class="header-user-link">마이페이지</a>
+                <a href="/mypage/<sec:authentication property='principal.user.id'/>" class="header-user-link">마이페이지</a>
                 <form action="/logout" method="post" class="header-logout-form">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <button type="submit" class="header-logout-btn">로그아웃</button>

@@ -13,6 +13,7 @@ import com.WHS.Robotics.entity.User;
 import org.springframework.security.core.Authentication;
 import com.WHS.Robotics.config.auth.PrincipalDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 @RequestMapping
@@ -78,13 +79,21 @@ public class UserController {
         }
     }
 
-    // 마이페이지
-    @GetMapping("/mypage")
-    public String myPage(Authentication authentication, Model model) {
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        User user = principalDetails.getUser();
-        model.addAttribute("user", user);
-        return "mypage";
+    // 마이페이지 (id 파라미터로 접근)
+    @GetMapping("/mypage/{id}")
+    public String myPage(@PathVariable int id, Model model) {
+        try {
+            User user = userRepository.findById(id);
+            if (user == null) {
+                model.addAttribute("error", "존재하지 않는 사용자입니다.");
+                return "error"; // 에러 페이지로 이동
+            }
+            model.addAttribute("user", user);
+            return "mypage";
+        } catch (Exception e) {
+            model.addAttribute("error", "사용자 조회 중 오류가 발생했습니다: " + e.getMessage());
+            return "error";
+        }
     }
 
     // 비밀번호 변경 폼 (기업 회원 이상만 접근 가능)

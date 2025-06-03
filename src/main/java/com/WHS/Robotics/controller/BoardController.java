@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 import com.WHS.Robotics.repository.FileRepository;
 import jakarta.servlet.ServletContext;
-import java.io.File;
-import java.io.IOException;
 
 @Controller
 public class BoardController {
@@ -209,7 +207,7 @@ public class BoardController {
     }
 
     // 공지사항 수정 처리
-    @PreAuthorize("hasRole('ADMIN') or @boardSecurity.isPostOwner(#id, principal.user.id)")
+    @PreAuthorize("@boardSecurity.isPostOwner(#id, principal.user.id)")
     @PostMapping("/board/editNotice")
     public String editNotice(@RequestParam int id,
                             @RequestParam String title,

@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import com.WHS.Robotics.config.auth.PrincipalDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @Controller
 @RequestMapping
@@ -97,6 +98,7 @@ public class UserController {
     }
 
     // 비밀번호 변경 폼 (기업 회원 이상만 접근 가능)
+    @PreAuthorize("hasRole('ADMIN') or hasRole('BUSINESS')")
     @GetMapping("/mypage/password")
     public String passwordChangeForm(Authentication authentication, Model model) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
@@ -105,7 +107,8 @@ public class UserController {
         return "password";
     }
 
-    // 비밀번호 변경 처리
+    // 비밀번호 변경 처리 (기업 회원 이상만 접근 가능)
+    @PreAuthorize("hasRole('ADMIN') or hasRole('BUSINESS')")
     @PostMapping("/mypage/password")
     public String changePassword(Authentication authentication,
                                @RequestParam String currentPassword,

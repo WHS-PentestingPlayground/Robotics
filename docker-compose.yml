@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  # Oracle Database 서비스
+  oracle-db:
+    image: gvenzl/oracle-xe:21-slim
+    container_name: oracle-xe
+    ports:
+      - "${ORACLE_HOST_PORT}:1521"  # 호스트:컨테이너 포트 매핑
+    environment:
+      # Oracle 관리자 비밀번호
+      - ORACLE_PASSWORD=${ORACLE_ADMIN_PASSWORD}
+      # 애플리케이션용 사용자 자동 생성 (gvenzl/oracle-xe 기본 기능)
+      - APP_USER=${ORACLE_APP_USER}
+      - APP_USER_PASSWORD=${ORACLE_APP_PASSWORD}
+      # 데이터베이스 이름 설정
+      - ORACLE_DATABASE=${ORACLE_DATABASE}
+      # 문자셋 설정 (한글 지원)
+      - ORACLE_CHARACTERSET=${ORACLE_CHARACTERSET}
+      # 자동 시작 옵션
+      - ORACLE_AUTOMATIC_MEMORY_MANAGEMENT=false
+    volumes:
+      # Oracle 데이터 영구 저장
+      - oracle-data:/opt/oracle/oradata
+      # 초기화 스크립트 실행 (테이블 생성만)
+      - ./init.sql:/container-entrypoint-initdb.d/init_tables.sql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s  # Oracle 시작 시간 여유있게 설정
+    networks:
+      - playground-network
+
+  # Spring Boot 애플리케이션 서비스
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: playground-app
+    ports:
+      - "${APP_HOST_PORT}:8080"  # 웹 애플리케이션 포트
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+    environment:
+      # Oracle DB 연결 설정 (애플리케이션 계정 사용)
+      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@oracle-db:1521/${ORACLE_DATABASE}
+      - SPRING_DATASOURCE_USERNAME=${ORACLE_APP_USER}
+      - SPRING_DATASOURCE_PASSWORD=${ORACLE_APP_PASSWORD}
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=oracle.jdbc.OracleDriver
+      
+      # 로깅 레벨 설정
+      - LOGGING_LEVEL_COM_WHS=${LOG_LEVEL}
+      - LOGGING_LEVEL_SECURITY=${SECURITY_LOG_LEVEL}
+      
+      # 보안 설정
+      - SECURITY_DEBUG=${SECURITY_DEBUG}
+      
+      # 하위 호환성을 위한 환경변수
+      - ORACLE_USERNAME=${ORACLE_APP_USER}
+      - ORACLE_PASSWORD=${ORACLE_APP_PASSWORD}
+      
+    # .env 파일에서 환경변수 로드 (필수)
+    env_file:
+      - .env
+    networks:
+      - playground-network
+    restart: unless-stopped
+
+# 데이터 볼륨
+volumes:
+  oracle-data:
+    driver: local
+
+# 네트워크 설정
+networks:
+  playground-network:
+    driver: bridge 

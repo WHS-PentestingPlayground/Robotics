@@ -34,7 +34,6 @@
         </div>
     </div>
     <div class="main-tabs">
-        <div class="main-tab active">Brand</div>
     </div>
 </div>
 <!-- 필요시 아래에 추가 콘텐츠 삽입 -->

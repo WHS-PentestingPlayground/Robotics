@@ -1,60 +1,70 @@
--- Oracle DB 초기화 스크립트
--- 애플리케이션 사용자 스키마에서 실행
--- 모의해킹 플랫폼용 기본 스키마 및 테이블 생성
--- schema.sql과 완전 호환 버전
--- 
--- 주의: gvenzl/oracle-xe 이미지가 APP_USER/APP_USER_PASSWORD 환경변수로
---       사용자를 자동 생성하고 이 스크립트를 해당 사용자로 실행합니다
+-- Oracle DB 초기화 스크립트 (Oracle Express Edition용 - 개발 환경)
+-- 사용자 생성부터 테이블 생성까지 모든 작업 수행
+-- 개발용 계정: play / ground
 
--- 기존 테이블이 있다면 삭제 (개발 환경용)
--- Oracle에서는 IF EXISTS를 직접 지원하지 않으므로 예외 처리 방식 사용
-DECLARE
-    table_not_exist EXCEPTION;
-    PRAGMA EXCEPTION_INIT(table_not_exist, -942);
+-- 컨테이너 데이터베이스에서 XEPDB1로 전환
+ALTER SESSION SET CONTAINER = XEPDB1;
+
+-- Oracle 18c 이상에서 일반 사용자 생성을 위한 설정
+ALTER SESSION SET "_ORACLE_SCRIPT"=true;
+
+-- 기존 사용자가 있다면 삭제 (무시하고 진행)
+BEGIN
+    EXECUTE IMMEDIATE 'DROP USER play CASCADE';
+EXCEPTION
+    WHEN OTHERS THEN NULL;
+END;
+/
+
+-- 애플리케이션 사용자 생성 (개발용: play / ground)
+CREATE USER play IDENTIFIED BY ground;
+
+-- 기본 권한 부여
+GRANT CONNECT, RESOURCE TO play;
+GRANT UNLIMITED TABLESPACE TO play;
+GRANT CREATE SEQUENCE TO play;
+GRANT CREATE TRIGGER TO play;
+GRANT CREATE VIEW TO play;
+GRANT CREATE PROCEDURE TO play;
+GRANT DBA TO play;
+GRANT CREATE SESSION TO play;
+
+-- 애플리케이션 사용자로 전환하여 테이블 생성
+ALTER SESSION SET CURRENT_SCHEMA = play;
+
+-- 기존 테이블 삭제 (안전하게)
 BEGIN
     EXECUTE IMMEDIATE 'DROP TABLE FILES CASCADE CONSTRAINTS';
 EXCEPTION
-    WHEN table_not_exist THEN NULL;
+    WHEN OTHERS THEN NULL;
 END;
 /
 
-DECLARE
-    table_not_exist EXCEPTION;
-    PRAGMA EXCEPTION_INIT(table_not_exist, -942);
 BEGIN
     EXECUTE IMMEDIATE 'DROP TABLE COMMENTS CASCADE CONSTRAINTS';
 EXCEPTION
-    WHEN table_not_exist THEN NULL;
+    WHEN OTHERS THEN NULL;
 END;
 /
 
-DECLARE
-    table_not_exist EXCEPTION;
-    PRAGMA EXCEPTION_INIT(table_not_exist, -942);
 BEGIN
     EXECUTE IMMEDIATE 'DROP TABLE BOARDS CASCADE CONSTRAINTS';
 EXCEPTION
-    WHEN table_not_exist THEN NULL;
+    WHEN OTHERS THEN NULL;
 END;
 /
 
-DECLARE
-    table_not_exist EXCEPTION;
-    PRAGMA EXCEPTION_INIT(table_not_exist, -942);
 BEGIN
     EXECUTE IMMEDIATE 'DROP TABLE USERS CASCADE CONSTRAINTS';
 EXCEPTION
-    WHEN table_not_exist THEN NULL;
+    WHEN OTHERS THEN NULL;
 END;
 /
 
-DECLARE
-    seq_not_exist EXCEPTION;
-    PRAGMA EXCEPTION_INIT(seq_not_exist, -2289);
 BEGIN
     EXECUTE IMMEDIATE 'DROP SEQUENCE USERS_SEQ';
 EXCEPTION
-    WHEN seq_not_exist THEN NULL;
+    WHEN OTHERS THEN NULL;
 END;
 /
 
@@ -131,5 +141,9 @@ ALTER TABLE FILES ADD CONSTRAINT FK_FILES_BOARD_ID
 ALTER TABLE FILES ADD CONSTRAINT FK_FILES_UPLOADED_BY 
     FOREIGN KEY (UPLOADED_BY) REFERENCES USERS(ID);
 */
+
+-- 사용자 생성 완료 확인
+SELECT 'User play created successfully in XEPDB1' AS STATUS FROM DUAL;
+SELECT TABLE_NAME FROM USER_TABLES;
 
 COMMIT; 

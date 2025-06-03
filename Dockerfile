@@ -4,7 +4,7 @@ FROM tomcat:10.1-jdk17-temurin
 WORKDIR /app
 
 # WAR 파일 복사 (Spring Boot 3.x에서는 -plain.war가 아닌 일반 .war 사용)
-COPY build/libs/playground-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
+COPY build/libs/Robotics-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
 
 # 8080 포트 노출
 EXPOSE 8080

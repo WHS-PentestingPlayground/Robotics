@@ -1,0 +1,113 @@
+.mypage-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mypage-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+}
+
+.mypage-header h1 {
+    color: #333;
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+.mypage-content {
+    padding: 1rem 0;
+}
+
+.error-message {
+    background: #fff3f3;
+    color: #d63031;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    border: 1px solid #ff7675;
+}
+
+.user-info {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 6px;
+    margin-bottom: 2rem;
+}
+
+.user-info h2 {
+    color: #2d3436;
+    font-size: 1.4rem;
+    margin: 0 0 1rem 0;
+}
+
+.info-item {
+    display: flex;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.label {
+    width: 120px;
+    color: #636e72;
+    font-weight: 500;
+}
+
+.value {
+    flex: 1;
+    color: #2d3436;
+}
+
+.mypage-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.action-btn {
+    padding: 0.8rem 1.5rem;
+    background: #0984e3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+.action-btn:hover {
+    background: #0873c4;
+}
+
+@media (max-width: 768px) {
+    .mypage-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .info-item {
+        flex-direction: column;
+    }
+
+    .label {
+        width: 100%;
+        margin-bottom: 0.3rem;
+    }
+
+    .mypage-actions {
+        flex-direction: column;
+    }
+
+    .action-btn {
+        width: 100%;
+    }
+} 

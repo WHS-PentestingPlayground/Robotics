@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import jakarta.servlet.ServletContext;
 
-@Service
+@Service("boardService")
 public class BoardService {
     @Autowired
     private UserRepository userRepository;
@@ -156,6 +156,24 @@ public class BoardService {
                 fileEntity.setUploadedBy((long) board.getUserId());
                 fileRepository.save(fileEntity);
             }
+        }
+    }
+
+    public boolean isPostOwner(int postId, int userId) {
+        try {
+            Board board = boardRepository.findById(postId);
+            return board != null && board.getUserId() == userId;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isCommentOwner(int commentId, int userId) {
+        try {
+            Comment comment = commentRepository.findById(commentId);
+            return comment != null && comment.getUserId() == userId;
+        } catch (Exception e) {
+            return false;
         }
     }
 } 

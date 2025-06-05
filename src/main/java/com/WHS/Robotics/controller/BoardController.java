@@ -108,7 +108,7 @@ public class BoardController {
     }
 
     // 게시글 삭제
-    @PreAuthorize("hasRole('ADMIN') or @boardSecurity.isPostOwner(#id, principal.user.id)")
+    @PreAuthorize("hasRole('ADMIN') or @boardService.isPostOwner(#id, principal.user.id)")
     @PostMapping("/board/deletePost")
     public String deletePost(@RequestParam int id) throws Exception {
         boardService.deletePost(id);
@@ -130,7 +130,7 @@ public class BoardController {
     }
 
     // 댓글 삭제
-    @PreAuthorize("hasRole('ADMIN') or @boardSecurity.isCommentOwner(#commentId, principal.user.id)")
+    @PreAuthorize("hasRole('ADMIN') or @boardService.isCommentOwner(#commentId, principal.user.id)")
     @PostMapping("/deleteComment")
     public String deleteComment(@RequestParam int commentId,
                                 @RequestParam int boardId) throws Exception {
@@ -139,7 +139,6 @@ public class BoardController {
     }
 
     // 댓글 수정
-    @PreAuthorize("@boardSecurity.isCommentOwner(#commentId, principal.user.id)")
     @PostMapping("/updateComment")
     public String updateComment(@RequestParam int commentId,
                                 @RequestParam String content,
@@ -181,7 +180,7 @@ public class BoardController {
     }
 
     // 게시글 수정 처리
-    @PreAuthorize("@boardSecurity.isPostOwner(#id, principal.user.id)")
+    @PreAuthorize("@boardService.isPostOwner(#id, principal.user.id)")
     @PostMapping("/board/editPost")
     public String editPost(@RequestParam int id,
                            @RequestParam String title,
@@ -207,7 +206,7 @@ public class BoardController {
     }
 
     // 공지사항 수정 처리
-    @PreAuthorize("@boardSecurity.isPostOwner(#id, principal.user.id)")
+    @PreAuthorize("@boardService.isPostOwner(#id, principal.user.id)")
     @PostMapping("/board/editNotice")
     public String editNotice(@RequestParam int id,
                             @RequestParam String title,

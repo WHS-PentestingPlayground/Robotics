@@ -1,32 +1,27 @@
 services:
-  # Oracle Database 서비스 (개발 환경용 - 하드코딩)
+  # Oracle Database 서비스 (gvenzl/oracle-free:slim - 크로스 플랫폼 지원)
   oracle-db:
-    image: container-registry.oracle.com/database/express:21.3.0-xe
-    container_name: oracle-xe
+    image: gvenzl/oracle-free:slim
+    container_name: oracle-free
     ports:
-      - "1522:1521"  # Oracle DB 포트
-      - "5500:5500"  # EM Express 포트
+      - "1522:1521"  # Oracle DB 포트 (팀 편의를 위해 1522 유지)
     environment:
       # Oracle 관리자 비밀번호 (개발용)
-      - ORACLE_PWD=admin123
-      # PDB 이름
-      - ORACLE_PDB=XEPDB1
-      # 문자셋 설정 (한글 지원)
-      - ORACLE_CHARACTERSET=AL32UTF8
-      # init.sql에서 사용할 환경변수 (개발용)
-      - ORACLE_APP_USER=play
-      - ORACLE_APP_PASSWORD=ground
+      - ORACLE_PASSWORD=admin123
+      # 애플리케이션 사용자 자동 생성 (개발용)
+      - APP_USER=play
+      - APP_USER_PASSWORD=ground
     volumes:
       # Oracle 데이터 영구 저장
       - oracle-data:/opt/oracle/oradata
-      # 초기화 스크립트 실행
-      - ./init.sql:/opt/oracle/scripts/startup/init_database.sql
+      # 초기화 스크립트 실행 (gvenzl 공식 방식)
+      - ./init.sql:/container-entrypoint-initdb.d/init.sql:ro
     healthcheck:
-      test: ["CMD", "sh", "-c", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s system/admin123@//localhost:1521/XE | grep -q '1'"]
-      interval: 30s
-      timeout: 10s
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
       retries: 10
-      start_period: 300s
+      start_period: 5s
     networks:
       - robotics-network
 
@@ -42,8 +37,8 @@ services:
       oracle-db:
         condition: service_healthy
     environment:
-      # Oracle DB 연결 설정 (개발용 계정)
-      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@oracle-db:1521/XEPDB1
+      # Oracle DB 연결 설정 (gvenzl/oracle-free는 FREEPDB1 사용)
+      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@oracle-db:1521/FREEPDB1
       - SPRING_DATASOURCE_USERNAME=play
       - SPRING_DATASOURCE_PASSWORD=ground
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=oracle.jdbc.OracleDriver

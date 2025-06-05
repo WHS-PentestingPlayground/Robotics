@@ -1,35 +1,11 @@
--- Oracle DB 초기화 스크립트 (Oracle Express Edition용 - 개발 환경)
--- 사용자 생성부터 테이블 생성까지 모든 작업 수행
+-- Oracle DB 초기화 스크립트 (gvenzl/oracle-free:slim용 - 개발 환경)
+-- 테이블 생성 스크립트 (사용자는 APP_USER 환경변수로 자동 생성됨)
 -- 개발용 계정: play / ground
 
--- 컨테이너 데이터베이스에서 XEPDB1로 전환
-ALTER SESSION SET CONTAINER = XEPDB1;
+-- gvenzl/oracle-free 이미지는 FREEPDB1 사용
+ALTER SESSION SET CONTAINER = FREEPDB1;
 
--- Oracle 18c 이상에서 일반 사용자 생성을 위한 설정
-ALTER SESSION SET "_ORACLE_SCRIPT"=true;
-
--- 기존 사용자가 있다면 삭제 (무시하고 진행)
-BEGIN
-    EXECUTE IMMEDIATE 'DROP USER play CASCADE';
-EXCEPTION
-    WHEN OTHERS THEN NULL;
-END;
-/
-
--- 애플리케이션 사용자 생성 (개발용: play / ground)
-CREATE USER play IDENTIFIED BY ground;
-
--- 기본 권한 부여
-GRANT CONNECT, RESOURCE TO play;
-GRANT UNLIMITED TABLESPACE TO play;
-GRANT CREATE SEQUENCE TO play;
-GRANT CREATE TRIGGER TO play;
-GRANT CREATE VIEW TO play;
-GRANT CREATE PROCEDURE TO play;
-GRANT DBA TO play;
-GRANT CREATE SESSION TO play;
-
--- 애플리케이션 사용자로 전환하여 테이블 생성
+-- 애플리케이션 사용자로 전환 (APP_USER 환경변수로 이미 생성됨)
 ALTER SESSION SET CURRENT_SCHEMA = play;
 
 -- 기존 테이블 삭제 (안전하게)
@@ -142,8 +118,8 @@ ALTER TABLE FILES ADD CONSTRAINT FK_FILES_UPLOADED_BY
     FOREIGN KEY (UPLOADED_BY) REFERENCES USERS(ID);
 */
 
--- 사용자 생성 완료 확인
-SELECT 'User play created successfully in XEPDB1' AS STATUS FROM DUAL;
+-- 테이블 생성 완료 확인
+SELECT 'Tables created successfully in FREEPDB1 for user play' AS STATUS FROM DUAL;
 SELECT TABLE_NAME FROM USER_TABLES;
 
 COMMIT; 

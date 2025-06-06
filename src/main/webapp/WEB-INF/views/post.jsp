@@ -19,7 +19,7 @@
             <div class="mb-1-5">
                 <c:forEach var="file" items="${attachedFiles}">
                     <div class="mb-1">
-                        <img src="/uploads/${file.filePath}" alt="첨부 이미지" class="img-attach" />
+                        <img src="${file.filePath}" alt="첨부 이미지" class="img-attach" />
                     </div>
                 </c:forEach>
             </div>

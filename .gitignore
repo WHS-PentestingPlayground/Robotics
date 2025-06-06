@@ -42,6 +42,9 @@ out/
 # uploads directory
 src/main/webapp/uploads/*
 !src/main/webapp/uploads/.gitkeep
+src/main/webapp/uploads/img/*
+!src/main/webapp/uploads/img/
+!src/main/webapp/uploads/img/.gitkeep
 
 ### Environment Variables ###
 .env

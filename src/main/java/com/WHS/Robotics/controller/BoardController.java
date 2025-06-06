@@ -13,11 +13,15 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import com.WHS.Robotics.config.auth.PrincipalDetails;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.io.File;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import com.WHS.Robotics.repository.FileRepository;
 import jakarta.servlet.ServletContext;
+import com.WHS.Robotics.util.FileUploadFilter;
 
 @Controller
 public class BoardController {
@@ -75,9 +79,12 @@ public class BoardController {
         model.addAttribute("commentUsernames", commentUsernames);
         // 첨부 파일 정보 추가
         List<com.WHS.Robotics.entity.File> attachedFiles = fileRepository.findByBoardId((long) id);
-        System.out.println("첨부파일 개수: " + attachedFiles.size());
-        if (!attachedFiles.isEmpty()) {
-            System.out.println("첫 파일명: " + attachedFiles.get(0).getFileName());
+
+        for (com.WHS.Robotics.entity.File file : attachedFiles) {
+            String path = file.getFilePath();
+            if (path != null && path.endsWith("/")) {
+                file.setFilePath(path.substring(0, path.length() - 1));
+            }
         }
         model.addAttribute("attachedFiles", attachedFiles);
         return "post";
@@ -162,8 +169,20 @@ public class BoardController {
     public String writeNotice(@RequestParam("title") String title,
                               @RequestParam("content") String content,
                               @RequestParam("userId") int userId,
-                              @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
-        boardService.writeNotice(title, content, userId, file, servletContext);
+                              @RequestParam(value = "file", required = false) MultipartFile file,
+                              @RequestParam(value = "path", required = false) String path,
+                              Model model) throws Exception {
+        String filePath = null;
+        try {
+            filePath = FileUploadFilter.validateAndSaveImage(file, path, servletContext);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("loginUserId", userId);
+            model.addAttribute("title", title);
+            model.addAttribute("content", content);
+            return "notice";
+        }
+        boardService.writeNotice(title, content, userId, filePath);
         return "redirect:/board/posts";
     }
 

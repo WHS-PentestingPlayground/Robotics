@@ -72,7 +72,7 @@ public class BoardService {
         return "unknown";
     }
 
-    public void writeNotice(String title, String content, int userId, MultipartFile file, ServletContext servletContext) throws Exception {
+    public void writeNotice(String title, String content, int userId, String filePath) throws Exception {
         // 게시글 저장
         Board board = new Board();
         board.setTitle(title);
@@ -82,18 +82,12 @@ public class BoardService {
         board.setNotice(true);  // 공지사항으로 설정
         boardRepository.save(board);
 
-        // 파일이 있다면 저장
-        if (file != null && !file.isEmpty()) {
-            String uploadDir = servletContext.getRealPath("/uploads/");
-            java.io.File dir = new java.io.File(uploadDir);
-            if (!dir.exists()) dir.mkdirs();
-            String originalFilename = file.getOriginalFilename();
-            java.io.File dest = new java.io.File(dir, originalFilename);
-            file.transferTo(dest);
+        // 파일 경로가 있으면 파일 엔티티 저장
+        if (filePath != null) {
             com.WHS.Robotics.entity.File fileEntity = new com.WHS.Robotics.entity.File();
             fileEntity.setBoardId((long) board.getId());
-            fileEntity.setFileName(originalFilename);
-            fileEntity.setFilePath(originalFilename);
+            fileEntity.setFileName(filePath.substring(filePath.lastIndexOf('/') + 1));
+            fileEntity.setFilePath(filePath);
             fileEntity.setUploadedAt(new Timestamp(System.currentTimeMillis()));
             fileEntity.setUploadedBy((long) userId);
             fileRepository.save(fileEntity);

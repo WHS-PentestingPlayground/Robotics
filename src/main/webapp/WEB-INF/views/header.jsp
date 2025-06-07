@@ -7,7 +7,7 @@
         <div class="header-logo">
             <a href="/" class="header-logo-link">
                 <span class="header-logo-emoji">🤖</span>
-                <span class="header-logo-text">WH 화햇로보틱스</span>
+                <span class="header-logo-text">WH 로보틱스</span>
             </a>
         </div>
         <!-- 가운데: 메인 메뉴 -->

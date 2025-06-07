@@ -1,10 +1,17 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+body {
+  background: #fff;
+  font-family: 'Pretendard', 'sans-serif';
+}
+
 .mypage-container {
     max-width: 800px;
     margin: 2rem auto;
-    padding: 2rem;
     background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 32px 24px;
 }
 
 .mypage-header {
@@ -110,4 +117,11 @@
     .action-btn {
         width: 100%;
     }
+}
+
+.mypage-title {
+    font-size: 2em;
+    font-weight: 700;
+    color: #003366;
+    margin-bottom: 18px;
 } 

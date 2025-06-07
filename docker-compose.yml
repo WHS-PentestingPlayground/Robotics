@@ -4,7 +4,7 @@ services:
     image: gvenzl/oracle-free:slim
     container_name: oracle-free
     ports:
-      - "1522:1521"  # Oracle DB 포트 (팀 편의를 위해 1522 유지)
+      - "1522:1521"  # Oracle DB 포트
     environment:
       # Oracle 관리자 비밀번호 (개발용)
       - ORACLE_PASSWORD=admin123

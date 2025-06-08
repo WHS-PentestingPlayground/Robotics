@@ -9,18 +9,6 @@
   <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
-<!-- 기존 텍스트/버튼 영역
-<h1>메인 페이지</h1>
-<p>화햇 로보틱스 메인페이지</p>
-<form action="/board/posts" method="get">
-  <button type="submit">게시판 가기</button>
-</form>
-<form action="/login" method="get">
-  <button type="submit">로그인</button>
-</form>
-<form action="/logout" method="get">
-  <button type="submit">로그아웃</button>
-</form> -->
 
 <!-- 모던 메인 섹션 -->
 <div class="main-hero">

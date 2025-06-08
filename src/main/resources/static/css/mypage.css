@@ -1,6 +1,7 @@
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
-body {
+/* 마이페이지 전용 body 스타일 - 헤더 스타일과 충돌 방지 */
+.mypage-body {
   background: #fff;
   font-family: 'Pretendard', 'sans-serif';
 }
@@ -8,6 +9,7 @@ body {
 .mypage-container {
     max-width: 800px;
     margin: 2rem auto;
+    margin-top: 1rem; /* 헤더와의 간격 확보 */
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);

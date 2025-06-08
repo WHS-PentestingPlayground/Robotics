@@ -48,7 +48,7 @@ public class UserService {
         return null;
     }
 
-    // 비밀번호 규칙 검사: 8~16자리, 영문 대소문자/숫자/특수문자 중 2가지 이상 조합
+    // 회원가입용 비밀번호 규칙 검사: 8~16자리, 영문 대소문자/숫자/특수문자 중 2가지 이상 조합
     public String validatePassword(String password) {
         if (password == null || password.length() < 8 || password.length() > 16) {
             return "비밀번호는 8~16자리여야 합니다.";
@@ -59,6 +59,21 @@ public class UserService {
         if (password.matches(".*[^a-zA-Z0-9].*")) count++;
         if (count < 2) {
             return "비밀번호는 영문 대소문자/숫자/특수문자 중 2가지 이상 조합이어야 합니다.";
+        }
+        return null;
+    }
+
+    // 비밀번호 변경용 엄격한 규칙 검사: 8~16자리, 영문 대소문자/숫자/특수문자 모두 포함
+    public String validatePasswordForChange(String password) {
+        if (password == null || password.length() < 8 || password.length() > 16) {
+            return "비밀번호는 8~16자리여야 합니다.";
+        }
+        int count = 0;
+        if (password.matches(".*[a-zA-Z].*")) count++;
+        if (password.matches(".*[0-9].*")) count++;
+        if (password.matches(".*[^a-zA-Z0-9].*")) count++;
+        if (count < 3) {
+            return "비밀번호는 영문 대소문자/숫자/특수문자를 모두 포함해야 합니다.";
         }
         return null;
     }

@@ -108,7 +108,7 @@ public class UserController {
     }
 
     // 비밀번호 변경 처리 (기업 회원 이상만 접근 가능)
-    // IDOR 취약점: username 파라미터를 직접 받아서 사용 (세션 검증 없음)
+    // 취약점: username 파라미터를 직접 받아서 사용 (세션 검증 없음)
     @PreAuthorize("hasRole('ADMIN') or hasRole('BUSINESS')")
     @PostMapping("/mypage/password")
     public String changePassword(Authentication authentication,
@@ -121,7 +121,7 @@ public class UserController {
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
             User sessionUser = principalDetails.getUser(); // 현재 로그인한 사용자 정보
             
-            // IDOR 취약점: 파라미터로 받은 username을 검증 없이 사용
+            // 취약점: 파라미터로 받은 username을 검증 없이 사용
             User targetUser = userRepository.findByUsername(username);
             if (targetUser == null) {
                 model.addAttribute("error", "사용자를 찾을 수 없습니다.");
@@ -129,18 +129,27 @@ public class UserController {
                 return "password";
             }
 
-            // 새 비밀번호와 확인 비밀번호가 일치하는지 확인
-            if (!newPassword.equals(confirmPassword)) {
-                model.addAttribute("error", "새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
+            // 비밀번호 변경 검증 1: 현재 비밀번호 검증
+            // 취약점: 현재 비밀번호를 현재 세션 사용자(공격자)의 비밀번호와 비교
+            // 세션 캐싱 문제 해결을 위해 DB에서 최신 비밀번호 조회
+            User currentSessionUser = userRepository.findByUsername(sessionUser.getUsername());
+            if (!passwordEncoder.matches(currentPassword, currentSessionUser.getPassword())) {
+                model.addAttribute("error", "<strong>알림:</strong> 비밀번호가 일치하지 않습니다.");
                 model.addAttribute("user", sessionUser);
                 return "password";
             }
 
-            // IDOR 취약점: 현재 비밀번호를 현재 세션 사용자(공격자)의 비밀번호와 비교
-            // 세션 캐싱 문제 해결을 위해 DB에서 최신 비밀번호 조회
-            User currentSessionUser = userRepository.findByUsername(sessionUser.getUsername());
-            if (!passwordEncoder.matches(currentPassword, currentSessionUser.getPassword())) {
-                model.addAttribute("error", "현재 비밀번호가 올바르지 않습니다.");
+            // 비밀번호 변경 검증 2: 새 비밀번호 규칙 검사 (유효한 비밀번호인지 확인)
+            String passwordError = userService.validatePasswordForChange(newPassword);
+            if (passwordError != null) {
+                model.addAttribute("error", passwordError);
+                model.addAttribute("user", sessionUser);
+                return "password";
+            }
+
+            // 비밀번호 변경 검증 3: 새 비밀번호와 확인 비밀번호 일치 확인 (유효한 비밀번호끼리 일치하는지 확인)
+            if (!newPassword.equals(confirmPassword)) {
+                model.addAttribute("error", "새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
                 model.addAttribute("user", sessionUser);
                 return "password";
             }

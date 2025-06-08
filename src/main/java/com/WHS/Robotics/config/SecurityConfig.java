@@ -13,6 +13,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.WHS.Robotics.config.auth.PrincipalDetailsService;
+import jakarta.servlet.DispatcherType;
 
 @Configuration
 @EnableWebSecurity
@@ -51,11 +52,14 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/board/**").hasAnyRole("BUSINESS", "ADMIN") // BUSINESS, ADMIN 권한만 접근 가능
-                        .requestMatchers("/mypage/**").authenticated() // 인증만 되면 접근 가능
-                        .requestMatchers("/mypage/password/**").hasAnyRole("BUSINESS", "ADMIN") // BUSINESS, ADMIN 권한만 접근 가능
-                        .requestMatchers("/admin/**").hasRole("ADMIN") // ADMIN 권한만 접근 가능
-                        .anyRequest().permitAll() // 나머지 요청은 모두 허용
+                        // /uploads/img/**는 브라우저 접근 허용 그 외 /uploads/**는 차단
+                        .requestMatchers("/uploads/img/**").permitAll()
+                        .requestMatchers("/uploads/**").denyAll()
+                        .requestMatchers("/board/**").hasAnyRole("BUSINESS", "ADMIN")
+                        .requestMatchers("/mypage/**").authenticated()
+                        .requestMatchers("/mypage/password/**").hasAnyRole("BUSINESS", "ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().permitAll()
                 )
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login").permitAll() // 커스텀 로그인 페이지
@@ -64,7 +68,6 @@ public class SecurityConfig {
                         .failureUrl("/login?error=true") // 로그인 실패 시 쿼리 파라미터 전달
                 )
                 .userDetailsService(principalDetailsService);
-                        
         return http.build();
     }
 }

@@ -125,6 +125,13 @@ button, .btn {
     .main-tabs { gap: 24px; }
 }
 
+/* 기본 container 클래스 - products.jsp 등에서 사용 */
+.container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 20px;
+}
+
 /* login.jsp 분리 스타일 */
 .container-login {
   max-width: 400px;

@@ -1,5 +1,8 @@
 FROM tomcat:10.1-jdk17-temurin
 
+# 한국 시간대 설정 (KST)
+ENV TZ=Asia/Seoul
+
 # 작업 디렉토리 설정
 WORKDIR /app
 

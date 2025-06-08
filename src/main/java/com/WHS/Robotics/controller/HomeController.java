@@ -9,4 +9,16 @@ public class HomeController {
     public String index() {
         return "index";
     }
+
+    // 사업소개
+    @GetMapping("/about")
+    public String about() {
+        return "about";
+    }
+    
+    @GetMapping("/products")
+    public String products() {
+        return "products";
+    }
+
 }

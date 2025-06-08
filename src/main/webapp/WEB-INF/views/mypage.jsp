@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ include file="header.jsp" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -11,7 +12,7 @@
     <title>마이페이지 - 화햇 로보틱스</title>
     <link rel="stylesheet" href="/css/mypage.css">
 </head>
-<body>
+<body class="mypage-body">
     <div class="mypage-container">
         <div class="mypage-header">
             <h1>마이페이지</h1>

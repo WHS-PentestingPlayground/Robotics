@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ include file="header.jsp" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -10,9 +9,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마이페이지 - 화햇 로보틱스</title>
+    <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/mypage.css">
 </head>
 <body class="mypage-body">
+    <%@ include file="header.jsp" %>
     <div class="mypage-container">
         <div class="mypage-header">
             <h1>마이페이지</h1>

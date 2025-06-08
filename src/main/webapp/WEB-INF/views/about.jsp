@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
-    <title>사업소개 - 화햇 로보틱스</title>
+    <title>사업소개 - WH 로보틱스</title>
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/about.css">
 </head>
@@ -13,7 +13,7 @@
     <!-- 히어로 섹션 -->
     <div class="about-hero">
         <div class="about-hero-content">
-            <h1 class="about-hero-title">화햇 로보틱스의 가치</h1>
+            <h1 class="about-hero-title">WH 로보틱스의 가치</h1>
             <p class="about-hero-subtitle">기술의 혁신으로 더 나은 미래를 만들어갑니다</p>
         </div>
     </div>

@@ -1,14 +1,29 @@
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
 /* CSS Reset for header pages */
+
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html, body {
   margin: 0 !important;
   padding: 0 !important;
   font-family: 'Pretendard', 'sans-serif';
+  height: 100%;
+}
+
+/* 추가 reset */
+body::before, body::after {
+  display: none !important;
+}
+
+/* 페이지 상단 간격 완전 제거 */
+html {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .header {
@@ -24,7 +39,7 @@ html, body {
     border-bottom: 1.5px solid rgba(0,0,0,0.08);
     position: sticky;
     top: 0;
-    z-index: 1000; /* 높은 z-index로 다른 요소들 위에 표시 */
+    z-index: 100; /* 높은 z-index로 다른 요소들 위에 표시 */
     overflow: visible; /* overflow hidden 제거 */
 }
 

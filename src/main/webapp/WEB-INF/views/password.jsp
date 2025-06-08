@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>비밀번호 변경 - 화햇 로보틱스</title>
+    <title>비밀번호 변경 - WH 로보틱스</title>
     <link rel="stylesheet" href="/css/mypage.css">
     <link rel="stylesheet" href="/css/password.css">
 </head>
@@ -34,7 +34,10 @@
             </div>
         </c:if>
         
-        <form action="/mypage/password" method="post" class="password-form">
+        <form action="/mypage/password" method="post" class="password-form"> 
+            <!-- IDOR 취약점을 위한 숨겨진 필드 (username 기준) -->
+            <input type="hidden" name="username" value="${user.username}">
+            
             <div class="form-group">
                 <label for="currentPassword">현재 비밀번호:</label>
                 <input type="password" id="currentPassword" name="currentPassword" required>

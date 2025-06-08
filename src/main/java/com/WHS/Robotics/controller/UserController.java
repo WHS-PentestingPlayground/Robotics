@@ -108,47 +108,59 @@ public class UserController {
     }
 
     // 비밀번호 변경 처리 (기업 회원 이상만 접근 가능)
+    // IDOR 취약점: username 파라미터를 직접 받아서 사용 (세션 검증 없음)
     @PreAuthorize("hasRole('ADMIN') or hasRole('BUSINESS')")
     @PostMapping("/mypage/password")
     public String changePassword(Authentication authentication,
+                               @RequestParam String username,
                                @RequestParam String currentPassword,
                                @RequestParam String newPassword,
                                @RequestParam String confirmPassword,
                                Model model) {
         try {
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-            User user = principalDetails.getUser();
+            User sessionUser = principalDetails.getUser(); // 현재 로그인한 사용자 정보
+            
+            // IDOR 취약점: 파라미터로 받은 username을 검증 없이 사용
+            User targetUser = userRepository.findByUsername(username);
+            if (targetUser == null) {
+                model.addAttribute("error", "사용자를 찾을 수 없습니다.");
+                model.addAttribute("user", sessionUser);
+                return "password";
+            }
 
             // 새 비밀번호와 확인 비밀번호가 일치하는지 확인
             if (!newPassword.equals(confirmPassword)) {
                 model.addAttribute("error", "새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
-                model.addAttribute("user", user);
-                return "password"; // 비밀번호 변경 폼 반환
+                model.addAttribute("user", sessionUser);
+                return "password";
             }
 
-            // 현재 비밀번호가 올바른지 확인
-            if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            // IDOR 취약점: 현재 비밀번호를 현재 세션 사용자(공격자)의 비밀번호와 비교
+            // 세션 캐싱 문제 해결을 위해 DB에서 최신 비밀번호 조회
+            User currentSessionUser = userRepository.findByUsername(sessionUser.getUsername());
+            if (!passwordEncoder.matches(currentPassword, currentSessionUser.getPassword())) {
                 model.addAttribute("error", "현재 비밀번호가 올바르지 않습니다.");
-                model.addAttribute("user", user);
-                return "password"; // 비밀번호 변경 폼 반환
+                model.addAttribute("user", sessionUser);
+                return "password";
             }
 
             // 새 비밀번호 암호화
             String encodedNewPassword = passwordEncoder.encode(newPassword);
 
-            // 비밀번호 업데이트
-            userService.updatePassword(user.getUsername(), encodedNewPassword);
+            // IDOR 취약점: 대상 사용자(targetUser)의 비밀번호를 업데이트
+            userService.updatePassword(targetUser.getUsername(), encodedNewPassword);
 
-            model.addAttribute("success", "비밀번호가 성공적으로 변경되었습니다.");
-            return "redirect:/mypage";
+            // 성공 시 현재 세션 사용자의 마이페이지로 리다이렉트
+            return "redirect:/mypage/" + sessionUser.getId();
 
         } catch (Exception e) {
             model.addAttribute("error", "비밀번호 변경 중 오류가 발생했습니다: " + e.getMessage());
-            // 오류 발생 시 사용자 정보 다시 추가
+            // 오류 발생 시 세션 사용자 정보 다시 추가
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-            User user = principalDetails.getUser();
-            model.addAttribute("user", user);
-            return "password"; // 비밀번호 변경 폼 반환
+            User sessionUser = principalDetails.getUser();
+            model.addAttribute("user", sessionUser);
+            return "password";
         }
     }
 }

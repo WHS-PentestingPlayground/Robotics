@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ include file="header.jsp" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -10,22 +12,29 @@
 <body>
 <div class="container">
     <h1 class="text-center mb-2">대표 로봇 제품</h1>
+    <form method="get" action="/products" class="product-search-form">
+        <input type="text" name="search" value="${search}" placeholder="제품명 검색" class="product-search-input">
+        <button type="submit" class="product-search-btn">검색</button>
+    </form>
     <div class="product-cards flex-row flex-wrap justify-center gap-32">
-        <div class="product-card card-product">
-            <img src="https://placehold.co/180x180?text=AlphaBot" alt="AlphaBot 이미지" class="img-product">
-            <div class="robot-name name-product">AlphaBot</div>
-            <div class="robot-desc desc-product">AlphaBot은 스마트 공장 자동화를 위한 지능형 운반 로봇입니다. 고성능 센서와 AI 기반 경로 최적화로 효율적인 물류 이동을 지원합니다.</div>
-        </div>
-        <div class="product-card card-product">
-            <img src="https://placehold.co/180x180?text=CareBot" alt="CareBot 이미지" class="img-product">
-            <div class="robot-name name-product">CareBot</div>
-            <div class="robot-desc desc-product">CareBot은 병원 및 요양 시설에서 환자 케어를 돕는 서비스 로봇입니다. 음성 인식과 자율 주행 기능으로 안전하고 친근한 서비스를 제공합니다.</div>
-        </div>
-        <div class="product-card card-product">
-            <img src="https://placehold.co/180x180?text=EduBot" alt="EduBot 이미지" class="img-product">
-            <div class="robot-name name-product">EduBot</div>
-            <div class="robot-desc desc-product">EduBot은 교육 현장에서 활용되는 인터랙티브 학습 로봇입니다. 다양한 콘텐츠와 상호작용으로 창의적이고 즐거운 학습 환경을 만듭니다.</div>
-        </div>
+        <c:choose>
+            <c:when test="${not empty products}">
+                <c:forEach var="product" items="${products}" varStatus="status">
+                    <c:set var="reverseIndex" value="${fn:length(products) - status.index - 1}" />
+                    <c:set var="product" value="${products[reverseIndex]}" />
+                    <div class="product-card card-product">
+                        <img src="/product-image/${product.imagePath}" alt="${product.name} 이미지" class="img-product">
+                        <div class="robot-name name-product">${product.name}</div>
+                        <div class="robot-desc desc-product">
+                            <c:out value="${product.description}" default="제품 설명이 없습니다."/>
+                        </div>
+                    </div>
+                </c:forEach>
+            </c:when>
+            <c:otherwise>
+                <div>등록된 제품이 없습니다.</div>
+            </c:otherwise>
+        </c:choose>
     </div>
 </div>
 </body>

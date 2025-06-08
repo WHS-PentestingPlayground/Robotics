@@ -27,7 +27,7 @@ public class UserRepository {
             pstmt.setString(2, user.getPassword());
             pstmt.setString(3, user.getRole());
             pstmt.setString(4, user.getBusiness_token());
-            pstmt.setTimestamp(5, user.getCreated_at());
+            pstmt.setTimestamp(5, user.getCreatedAt());
             pstmt.executeUpdate();
             try (ResultSet rs = pstmt.getGeneratedKeys()) {
                 if (rs.next()) {
@@ -112,7 +112,7 @@ public class UserRepository {
         user.setPassword(rs.getString("PASSWORD"));
         user.setRole(rs.getString("ROLE"));
         user.setBusiness_token(rs.getString("BUSINESS_TOKEN"));
-        user.setCreated_at(rs.getTimestamp("CREATED_AT"));
+        user.setCreatedAt(rs.getTimestamp("CREATED_AT"));
         return user;
     }
 }

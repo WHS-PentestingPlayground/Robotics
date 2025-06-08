@@ -12,9 +12,10 @@
     <div class="card card-login">
         <h2 class="text-center">로그인</h2>
         <% if (request.getParameter("error") != null) { %>
-            <div class="text-error">아이디 또는 비밀번호가 올바르지 않습니다.</div>
+        <div class="text-error">아이디 또는 비밀번호가 올바르지 않습니다.</div>
         <% } %>
-        <form action="/login" method="post">
+        <!-- 여기 action만 수정 -->
+        <form action="/login-process" method="post">
             <label for="username">아이디:</label>
             <input type="text" id="username" name="username" required class="input-full">
 
@@ -23,8 +24,11 @@
 
             <button type="submit" class="main-btn btn-full">로그인</button>
         </form>
-        <p class="text-center mt-1-5"><a href="/register" class="link-blue">회원가입으로 이동</a></p>
+        <p class="text-center mt-1-5">
+            <a href="/register" class="link-blue">회원가입으로 이동</a>
+        </p>
     </div>
 </div>
 </body>
 </html>
+

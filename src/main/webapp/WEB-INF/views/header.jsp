@@ -1,5 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ page import="org.springframework.security.core.context.SecurityContextHolder" %>
+<%@ page import="org.springframework.security.core.Authentication" %>
+<%@ page import="com.WHS.Robotics.entity.User" %>
+
 <link rel="stylesheet" href="/css/header.css">
 <header class="header">
     <nav class="header-nav">
@@ -20,16 +24,25 @@
         <div class="header-user-menu">
             <!-- 로그인된 사용자에게만 보이는 메뉴 -->
             <sec:authorize access="isAuthenticated()">
+                <%
+                    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                    User user = null;
+                    if (auth != null && auth.getPrincipal() instanceof com.WHS.Robotics.entity.User) {
+                        user = (com.WHS.Robotics.entity.User) auth.getPrincipal();
+                    }
+                %>
                 <span class="header-username">
-                    <sec:authentication property="principal.username" />님
+                    <sec:authentication property="name" />님
                 </span>
-                <a href="/mypage/<sec:authentication property='principal.user.id'/>" class="header-user-link">마이페이지</a>
+                <% if (user != null) { %>
+                    <a href="/mypage/<%= user.getId() %>" class="header-user-link">마이페이지</a>
+                <% } %>
                 <form action="/logout" method="post" class="header-logout-form">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <button type="submit" class="header-logout-btn">로그아웃</button>
                 </form>
             </sec:authorize>
-            
+
             <!-- 로그인하지 않은 사용자에게만 보이는 메뉴 -->
             <sec:authorize access="!isAuthenticated()">
                 <a href="/login" class="header-user-link">로그인</a>
@@ -38,3 +51,4 @@
         </div>
     </nav>
 </header>
+

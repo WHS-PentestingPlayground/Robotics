@@ -28,10 +28,10 @@ public class UserController {
 
     // /login, /logout은 Spring Security에서 기본적으로 지원
     // 로그인 폼
-    @GetMapping("/login")
-    public String loginForm() {
-        return "login"; // 로그인 폼 뷰 반환
-    }
+    // @GetMapping("/login")
+    // public String loginForm() {
+    //     return "login"; // 로그인 폼 뷰 반환
+    // }
 
     // 회원가입 폼
     @GetMapping("/register")

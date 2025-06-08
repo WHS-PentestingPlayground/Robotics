@@ -9,21 +9,19 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.WHS.Robotics.config.auth.PrincipalDetailsService;
-import jakarta.servlet.DispatcherType;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // secured, preAuthorize, postAuthorize 어노테이션 활성화
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig {
 
     @Autowired
     private PrincipalDetailsService principalDetailsService;
 
-    @Bean 
+    @Bean
     public PasswordEncoder encodePwd() {
         return new PasswordEncoder() {
             @Override
@@ -52,7 +50,6 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        // /uploads/img/**는 브라우저 접근 허용 그 외 /uploads/**는 차단
                         .requestMatchers("/uploads/img/**").permitAll()
                         .requestMatchers("/uploads/**").denyAll()
                         .requestMatchers("/board/**").hasAnyRole("BUSINESS", "ADMIN")
@@ -61,15 +58,10 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 )
-                .formLogin(formLogin -> formLogin
-                        .loginPage("/login").permitAll() // 커스텀 로그인 페이지
-                        .loginProcessingUrl("/login") // 로그인 폼의 action 경로
-                        .defaultSuccessUrl("/") // 로그인 성공 시 리디렉션될 기본 URL
-                        .failureUrl("/login?error=true") // 로그인 실패 시 쿼리 파라미터 전달
-                )
-                .userDetailsService(principalDetailsService);
+                .formLogin(AbstractHttpConfigurer::disable)  // formLogin 끔
+                .userDetailsService(principalDetailsService);  // 안 써도 무방
         return http.build();
-        
     }
 }
+
 

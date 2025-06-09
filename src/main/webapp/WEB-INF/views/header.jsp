@@ -6,7 +6,7 @@
         <!-- 왼쪽: 로고 -->
         <div class="header-logo">
             <a href="/" class="header-logo-link">
-                <span class="header-logo-emoji">🤖</span>
+                <img src="/img/daegari.svg" alt="로고" class="header-logo-emoji">
                 <span class="header-logo-text">WH 로보틱스</span>
             </a>
         </div>

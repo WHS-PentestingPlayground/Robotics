@@ -415,4 +415,38 @@ li.post-item:hover {
   padding-left: 12px;
   border-left: 3px solid #e3e6ea;
   letter-spacing: 0.2px;
+}
+
+.product-search-form {
+    text-align: center;
+    margin-bottom: 24px;
+}
+.product-search-input {
+    width: 340px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 32px;
+    background: #e3f0fc;
+    font-size: 1.1rem;
+    outline: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    transition: box-shadow 0.2s;
+}
+.product-search-input:focus {
+    box-shadow: 0 4px 16px rgba(0, 123, 255, 0.10);
+    background: #d0e7fa;
+}
+.product-search-btn {
+    margin-left: 12px;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 32px;
+    background: #4da3ff;
+    color: #fff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.product-search-btn:hover {
+    background: #357ec7;
 } 

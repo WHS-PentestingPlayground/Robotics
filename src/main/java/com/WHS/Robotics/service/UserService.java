@@ -28,7 +28,7 @@ public class UserService {
 //            throw new Exception("기업 회원가입은 보안팀으로 문의해주세요");
 //        }
 
-        user.setCreated_at(new Timestamp(System.currentTimeMillis()));
+        user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         userRepository.save(user);
     }
 

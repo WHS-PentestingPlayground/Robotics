@@ -36,7 +36,7 @@
                 </div>
                 <div class="info-item">
                     <span class="label">가입일:</span>
-                    <span class="value">${user.created_at}</span>
+                    <span class="value">${user.createdAt}</span>
                 </div>
             </div>
             <div class="mypage-actions">

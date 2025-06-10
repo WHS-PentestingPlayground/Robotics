@@ -38,7 +38,21 @@ END;
 /
 
 BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE PRODUCTS CASCADE CONSTRAINTS';
+EXCEPTION
+    WHEN OTHERS THEN NULL;
+END;
+/
+
+BEGIN
     EXECUTE IMMEDIATE 'DROP SEQUENCE USERS_SEQ';
+EXCEPTION
+    WHEN OTHERS THEN NULL;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE PRODUCTS_SEQ';
 EXCEPTION
     WHEN OTHERS THEN NULL;
 END;
@@ -96,6 +110,30 @@ CREATE TABLE FILES(
   UPLOADED_BY NUMBER
 );
 
+-- PRODUCTS 테이블 생성
+CREATE TABLE PRODUCTS (
+    ID NUMBER PRIMARY KEY,
+    NAME VARCHAR2(100) NOT NULL,
+    PRICE NUMBER,
+    IMAGE_PATH VARCHAR2(255) NOT NULL,
+    DESCRIPTION VARCHAR2(1000),
+    CREATED_AT TIMESTAMP(6)
+);
+
+-- PRODUCTS 테이블용 시퀀스 생성
+CREATE SEQUENCE PRODUCTS_SEQ START WITH 1 INCREMENT BY 1;
+
+-- PRODUCTS 테이블용 트리거 생성 (ID 자동 증가)
+CREATE OR REPLACE TRIGGER PRODUCTS_TRG
+BEFORE INSERT ON PRODUCTS
+FOR EACH ROW
+BEGIN
+  IF :NEW.ID IS NULL THEN
+    SELECT PRODUCTS_SEQ.NEXTVAL INTO :NEW.ID FROM DUAL;
+  END IF;
+END;
+/
+
 -- 테이블 생성 완료 확인
 SELECT 'Tables created successfully in FREEPDB1 for user play' AS STATUS FROM DUAL;
 SELECT TABLE_NAME FROM USER_TABLES;
@@ -118,5 +156,32 @@ VALUES ('시스템 점검 안내',
 
 -- 시퀀스 값 조정 (다음 일반 사용자는 ID 3부터 시작)
 ALTER SEQUENCE USERS_SEQ RESTART START WITH 3;
+
+INSERT INTO PRODUCTS (NAME, PRICE, IMAGE_PATH, DESCRIPTION, CREATED_AT)
+VALUES (
+           'AlphaBot',
+           1500000,
+           'alphaBot.svg',
+           'AlphaBot은 스마트 공장 자동화를 위한 지능형 운반 로봇입니다. 고성능 센서와 AI 기반 경로 최적화로 효율적인 물류 이동을 지원합니다.',
+           SYSTIMESTAMP
+       );
+
+INSERT INTO PRODUCTS (NAME, PRICE, IMAGE_PATH, DESCRIPTION, CREATED_AT)
+VALUES (
+           'CareBot',
+           1200000,
+           'careBot.svg',
+           'CareBot은 병원 및 요양 시설에서 환자 케어를 돕는 서비스 로봇입니다. 음성 인식과 자율 주행 기능으로 안전하고 친근한 서비스를 제공합니다.',
+           SYSTIMESTAMP
+       );
+
+INSERT INTO PRODUCTS (NAME, PRICE, IMAGE_PATH, DESCRIPTION, CREATED_AT)
+VALUES (
+           'EduBot',
+           900000,
+           'eduBot.svg',
+           'EduBot은 교육 현장에서 활용되는 인터랙티브 학습 로봇입니다. 다양한 콘텐츠와 상호작용으로 창의적이고 즐거운 학습 환경을 만듭니다.',
+           SYSTIMESTAMP
+       );
 
 COMMIT; 

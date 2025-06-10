@@ -10,7 +10,6 @@ public class FileUploadFilter {
     private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png", "gif");
 
     public static String validateAndSaveImage(MultipartFile file, String path, ServletContext servletContext) throws Exception {
-        // fileName이 비어있으면 확장자 검사 넘어감
         String fileName = (file != null) ? file.getOriginalFilename() : null;
         if (!(fileName == null || fileName.trim().isEmpty())) {
             int dotIndex = fileName.lastIndexOf(".");

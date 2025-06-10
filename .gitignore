@@ -45,6 +45,7 @@ src/main/webapp/uploads/*
 src/main/webapp/uploads/img/*
 !src/main/webapp/uploads/img/
 !src/main/webapp/uploads/img/.gitkeep
+!src/main/webapp/uploads/robots/
 
 ### Environment Variables ###
 .env

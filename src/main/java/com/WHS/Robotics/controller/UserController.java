@@ -81,9 +81,9 @@ public class UserController {
         }
     }
 
-    // 마이페이지 (id 파라미터로 접근)
-    @GetMapping("/mypage/{id}")
-    public String myPage(@PathVariable int id, Model model) {
+
+    @GetMapping("/mypage")
+    public String myPage(@RequestParam("id") int id, Model model) {
         try {
             User user = userRepository.findById(id);
             if (user == null) {

@@ -15,10 +15,5 @@ public class HomeController {
     public String about() {
         return "about";
     }
-    
-//    @GetMapping("/products")
-//    public String products() {
-//        return "products";
-//    }
 
 }

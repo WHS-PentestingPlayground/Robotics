@@ -161,7 +161,7 @@ INSERT INTO PRODUCTS (NAME, PRICE, IMAGE_PATH, DESCRIPTION, CREATED_AT)
 VALUES (
            'AlphaBot',
            1500000,
-           'alphaBot.svg',
+           'alphaBot.png',
            'AlphaBot은 스마트 공장 자동화를 위한 지능형 운반 로봇입니다. 고성능 센서와 AI 기반 경로 최적화로 효율적인 물류 이동을 지원합니다.',
            SYSTIMESTAMP
        );
@@ -170,7 +170,7 @@ INSERT INTO PRODUCTS (NAME, PRICE, IMAGE_PATH, DESCRIPTION, CREATED_AT)
 VALUES (
            'CareBot',
            1200000,
-           'careBot.svg',
+           'careBot.png',
            'CareBot은 병원 및 요양 시설에서 환자 케어를 돕는 서비스 로봇입니다. 음성 인식과 자율 주행 기능으로 안전하고 친근한 서비스를 제공합니다.',
            SYSTIMESTAMP
        );
@@ -179,7 +179,7 @@ INSERT INTO PRODUCTS (NAME, PRICE, IMAGE_PATH, DESCRIPTION, CREATED_AT)
 VALUES (
            'EduBot',
            900000,
-           'eduBot.svg',
+           'eduBot.png',
            'EduBot은 교육 현장에서 활용되는 인터랙티브 학습 로봇입니다. 다양한 콘텐츠와 상호작용으로 창의적이고 즐거운 학습 환경을 만듭니다.',
            SYSTIMESTAMP
        );

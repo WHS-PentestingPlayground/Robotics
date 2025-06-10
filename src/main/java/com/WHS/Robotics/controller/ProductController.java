@@ -46,11 +46,12 @@ public class ProductController {
             String realPath = servletContext.getRealPath("/uploads/robots");
             Path imagePath = Paths.get(realPath).resolve(filename).normalize();
             Resource resource = new UrlResource(imagePath.toUri());
+
             if (!resource.exists() || !resource.isReadable()) {
                 return ResponseEntity.notFound().build();
             }
             String contentDisposition = "inline; filename=\"" + StringUtils.cleanPath(filename) + "\"";
-            System.out.println("contentDisposition: " + contentDisposition);
+
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                     .body(resource);

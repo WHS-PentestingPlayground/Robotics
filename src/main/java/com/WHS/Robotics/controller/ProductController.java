@@ -25,8 +25,7 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
-public class ProductController implements ServletContextAware { // implements ServletContextAware 추가
-
+public class ProductController {
     @Autowired
     private ProductRepository productRepository;
 
@@ -47,17 +46,14 @@ public class ProductController implements ServletContextAware { // implements Se
             String realPath = servletContext.getRealPath("/uploads/robots");
             Path imagePath = Paths.get(realPath).resolve(filename).normalize();
             Resource resource = new UrlResource(imagePath.toUri());
-
             if (!resource.exists() || !resource.isReadable()) {
                 return ResponseEntity.notFound().build();
             }
             String contentDisposition = "inline; filename=\"" + StringUtils.cleanPath(filename) + "\"";
             System.out.println("contentDisposition: " + contentDisposition);
-
             return ResponseEntity.ok()
-                    .headers(headers) // headers를 설정
+                    .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                     .body(resource);
-          
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
             return ResponseEntity.notFound().build();

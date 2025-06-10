@@ -64,7 +64,6 @@ CREATE TABLE USERS (
     USERNAME VARCHAR2(50) NOT NULL,
     PASSWORD VARCHAR2(100) NOT NULL,
     ROLE VARCHAR2(20),
-    BUSINESS_TOKEN VARCHAR2(255),
     CREATED_AT TIMESTAMP(6)
 );
 
@@ -135,29 +134,54 @@ BEGIN
 END;
 /
 
--- 외래키 제약조건 추가 (선택사항 - 팀 협의 후 결정)
--- 데이터 무결성 보장 vs 개발 편의성 중 선택
--- 운영 환경 시뮬레이션을 위해서는 추가 권장
-
-/*
-ALTER TABLE BOARDS ADD CONSTRAINT FK_BOARDS_USER_ID 
-    FOREIGN KEY (USER_ID) REFERENCES USERS(ID);
-
-ALTER TABLE COMMENTS ADD CONSTRAINT FK_COMMENTS_BOARD_ID 
-    FOREIGN KEY (BOARD_ID) REFERENCES BOARDS(ID);
-    
-ALTER TABLE COMMENTS ADD CONSTRAINT FK_COMMENTS_USER_ID 
-    FOREIGN KEY (USER_ID) REFERENCES USERS(ID);
-
-ALTER TABLE FILES ADD CONSTRAINT FK_FILES_BOARD_ID 
-    FOREIGN KEY (BOARD_ID) REFERENCES BOARDS(ID);
-    
-ALTER TABLE FILES ADD CONSTRAINT FK_FILES_UPLOADED_BY 
-    FOREIGN KEY (UPLOADED_BY) REFERENCES USERS(ID);
-*/
-
 -- 테이블 생성 완료 확인
 SELECT 'Tables created successfully in FREEPDB1 for user play' AS STATUS FROM DUAL;
 SELECT TABLE_NAME FROM USER_TABLES;
+
+-- 시나리오용 고정 계정 생성
+-- 관리자 계정 생성
+INSERT INTO USERS (ID, USERNAME, PASSWORD, ROLE, CREATED_AT) 
+VALUES (1, 'admin', '85f455ba36624ed0f6a0751189f8e2b1', 'ADMIN', SYSTIMESTAMP);
+
+-- 기업 회원 계정 생성
+INSERT INTO USERS (ID, USERNAME, PASSWORD, ROLE, CREATED_AT) 
+VALUES (2, 'bob_edu', 'bed128365216c019988915ed3add75fb', 'BUSINESS', SYSTIMESTAMP);
+
+-- 시나리오용 공지사항 생성 (관리자 ID 힌트 제공)
+INSERT INTO BOARDS (TITLE, CONTENT, USER_ID, CREATED_AT, IS_NOTICE) 
+VALUES ('시스템 점검 안내', 
+        '안녕하세요. 시스템 관리자입니다.<br>EduBot 제품 관련 정기 보안 점검을 실시합니다.<br>문의사항은 관리자에게 연락바랍니다.', 
+        1, 
+        SYSTIMESTAMP, 1);
+
+-- 시퀀스 값 조정 (다음 일반 사용자는 ID 3부터 시작)
+ALTER SEQUENCE USERS_SEQ RESTART START WITH 3;
+
+INSERT INTO PRODUCTS (NAME, PRICE, IMAGE_PATH, DESCRIPTION, CREATED_AT)
+VALUES (
+           'AlphaBot',
+           1500000,
+           'alphaBot.svg',
+           'AlphaBot은 스마트 공장 자동화를 위한 지능형 운반 로봇입니다. 고성능 센서와 AI 기반 경로 최적화로 효율적인 물류 이동을 지원합니다.',
+           SYSTIMESTAMP
+       );
+
+INSERT INTO PRODUCTS (NAME, PRICE, IMAGE_PATH, DESCRIPTION, CREATED_AT)
+VALUES (
+           'CareBot',
+           1200000,
+           'careBot.svg',
+           'CareBot은 병원 및 요양 시설에서 환자 케어를 돕는 서비스 로봇입니다. 음성 인식과 자율 주행 기능으로 안전하고 친근한 서비스를 제공합니다.',
+           SYSTIMESTAMP
+       );
+
+INSERT INTO PRODUCTS (NAME, PRICE, IMAGE_PATH, DESCRIPTION, CREATED_AT)
+VALUES (
+           'EduBot',
+           900000,
+           'eduBot.svg',
+           'EduBot은 교육 현장에서 활용되는 인터랙티브 학습 로봇입니다. 다양한 콘텐츠와 상호작용으로 창의적이고 즐거운 학습 환경을 만듭니다.',
+           SYSTIMESTAMP
+       );
 
 COMMIT; 

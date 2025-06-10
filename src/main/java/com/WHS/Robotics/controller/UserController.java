@@ -15,6 +15,7 @@ import com.WHS.Robotics.config.auth.PrincipalDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping
@@ -100,10 +101,18 @@ public class UserController {
     // 비밀번호 변경 폼 (기업 회원 이상만 접근 가능)
     @PreAuthorize("hasRole('ADMIN') or hasRole('BUSINESS')")
     @GetMapping("/mypage/password")
-    public String passwordChangeForm(Authentication authentication, Model model) {
+    public String passwordChangeForm(Authentication authentication, HttpServletRequest request, Model model) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         User user = principalDetails.getUser();
         model.addAttribute("user", user);
+        
+        // Flash 메시지 확인 (속도 제한 에러 등)
+        String flashError = (String) request.getSession().getAttribute("flashError");
+        if (flashError != null) {
+            model.addAttribute("error", flashError);
+            request.getSession().removeAttribute("flashError"); // 한 번 표시 후 제거
+        }
+        
         return "password";
     }
 
@@ -116,6 +125,7 @@ public class UserController {
                                @RequestParam String currentPassword,
                                @RequestParam String newPassword,
                                @RequestParam String confirmPassword,
+                               HttpServletRequest request,
                                Model model) {
         try {
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
@@ -164,7 +174,7 @@ public class UserController {
             return "redirect:/mypage/" + sessionUser.getId();
 
         } catch (Exception e) {
-            model.addAttribute("error", "비밀번호 변경 중 오류가 발생했습니다: " + e.getMessage());
+            model.addAttribute("error", "<strong>알림:</strong> " + e.getMessage());
             // 오류 발생 시 세션 사용자 정보 다시 추가
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
             User sessionUser = principalDetails.getUser();

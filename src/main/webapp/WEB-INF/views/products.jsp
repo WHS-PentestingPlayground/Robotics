@@ -23,7 +23,7 @@
                     <c:set var="reverseIndex" value="${fn:length(products) - status.index - 1}" />
                     <c:set var="product" value="${products[reverseIndex]}" />
                     <div class="product-card card-product">
-                        <img src="/product-image/${product.imagePath}" alt="${product.name} 이미지" class="img-product">
+                        <img src="/product-image?filename=${product.imagePath}" alt="${product.name} 이미지" class="img-product">
                         <div class="robot-name name-product">${product.name}</div>
                         <div class="robot-desc desc-product">
                             <c:out value="${product.description}" default="제품 설명이 없습니다."/>

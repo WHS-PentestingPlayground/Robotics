@@ -17,11 +17,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class ProductController {
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private ServletContext servletContext;
 
     @GetMapping("/products")
     public String getProducts(@RequestParam(value = "search", required = false) String search, Model model) {
@@ -31,19 +36,22 @@ public class ProductController {
         return "products";
     }
 
-    @GetMapping("/product-image/{filename:.+}")
-    public ResponseEntity<Resource> serveProductImage(@PathVariable String filename) {
+    @GetMapping("/product-image")
+    public ResponseEntity<Resource> serveProductImage(@RequestParam String filename) {
         try {
-            Path imagePath = Paths.get("src/main/webapp/uploads/robots").resolve(filename).normalize();
+            String realPath = servletContext.getRealPath("/uploads/robots");
+            Path imagePath = Paths.get(realPath).resolve(filename).normalize();
             Resource resource = new UrlResource(imagePath.toUri());
             if (!resource.exists() || !resource.isReadable()) {
                 return ResponseEntity.notFound().build();
             }
             String contentDisposition = "inline; filename=\"" + StringUtils.cleanPath(filename) + "\"";
+            System.out.println("contentDisposition: " + contentDisposition);
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                     .body(resource);
         } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }

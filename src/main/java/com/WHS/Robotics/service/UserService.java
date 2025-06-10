@@ -23,18 +23,10 @@ public class UserService {
         user.setUsername(username);
         user.setPassword(encodedPwd);
         user.setRole(role);
-        
-        // 기업회원이나 관리자계정 경우 기업회원용 business_token 랜덤으로 생성
-        if ("BUSINESS".equals(role) || "ADMIN".equals(role)) {
-             user.setBusiness_token(java.util.UUID.randomUUID().toString());
-         } else {
-             user.setBusiness_token(null);
-         }
 
 //        // 실제 시나리오에선 이런식으로 기업/관리자 회원가입 막을 예정, 테스트를 위해 개발중엔 풀어놓음
 //            throw new Exception("기업 회원가입은 보안팀으로 문의해주세요");
 //        }
-//        user.setBusiness_token(null);
 
         user.setCreated_at(new Timestamp(System.currentTimeMillis()));
         userRepository.save(user);
@@ -90,11 +82,6 @@ public class UserService {
             // 비밀번호 변경 제한
             if (isScenarioProtectedAccount(username)) {
                 throw new Exception("시스템 보안 정책에 의해 해당 계정의 비밀번호를 변경할 수 없습니다.");
-            }
-
-            // 기업 회원 이상인지 확인 (business_token 검증)
-            if (user.getBusiness_token() == null || user.getBusiness_token().trim().isEmpty()) {
-                throw new Exception("기업 회원 이상만 비밀번호 변경이 가능합니다.");
             }
 
             // 비밀번호 업데이트

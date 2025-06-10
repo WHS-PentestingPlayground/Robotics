@@ -60,9 +60,6 @@
         <div class="user-info-section">
             <small class="user-info-text">
                 회원 정보: <strong>${user.username}</strong> (${user.role})
-                <c:if test="${not empty user.business_token}">
-                    <br>기업 토큰: ${user.business_token}
-                </c:if>
             </small>
         </div>
     </div>

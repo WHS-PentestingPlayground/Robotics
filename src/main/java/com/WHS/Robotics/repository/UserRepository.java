@@ -20,14 +20,13 @@ public class UserRepository {
 
     // 회원 저장
     public int save(User user) throws SQLException {
-        String sql = "INSERT INTO USERS (USERNAME, PASSWORD, ROLE, BUSINESS_TOKEN, CREATED_AT) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO USERS (USERNAME, PASSWORD, ROLE, CREATED_AT) VALUES (?, ?, ?, ?)";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, user.getUsername());
             pstmt.setString(2, user.getPassword());
             pstmt.setString(3, user.getRole());
-            pstmt.setString(4, user.getBusiness_token());
-            pstmt.setTimestamp(5, user.getCreated_at());
+            pstmt.setTimestamp(4, user.getCreated_at());
             pstmt.executeUpdate();
             try (ResultSet rs = pstmt.getGeneratedKeys()) {
                 if (rs.next()) {
@@ -111,7 +110,6 @@ public class UserRepository {
         user.setUsername(rs.getString("USERNAME"));
         user.setPassword(rs.getString("PASSWORD"));
         user.setRole(rs.getString("ROLE"));
-        user.setBusiness_token(rs.getString("BUSINESS_TOKEN"));
         user.setCreated_at(rs.getTimestamp("CREATED_AT"));
         return user;
     }

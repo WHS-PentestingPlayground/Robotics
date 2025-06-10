@@ -36,7 +36,7 @@ public class UserService {
 //        }
 //        user.setBusiness_token(null);
 
-        user.setCreated_at(new Timestamp(System.currentTimeMillis()));
+        user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         userRepository.save(user);
     }
 

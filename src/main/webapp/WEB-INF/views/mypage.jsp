@@ -34,12 +34,6 @@
                     <span class="label">회원 등급:</span>
                     <span class="value">${user.role}</span>
                 </div>
-                <c:if test="${not empty user.business_token}">
-                    <div class="info-item">
-                        <span class="label">기업 토큰:</span>
-                        <span class="value">${user.business_token}</span>
-                    </div>
-                </c:if>
                 <div class="info-item">
                     <span class="label">가입일:</span>
                     <span class="value">${user.createdAt}</span>

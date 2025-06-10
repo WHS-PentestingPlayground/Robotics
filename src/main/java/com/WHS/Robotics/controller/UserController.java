@@ -174,7 +174,7 @@ public class UserController {
             return "redirect:/mypage/" + sessionUser.getId();
 
         } catch (Exception e) {
-            model.addAttribute("error", "비밀번호 변경 중 오류가 발생했습니다: " + e.getMessage());
+            model.addAttribute("error", "<strong>알림:</strong> " + e.getMessage());
             // 오류 발생 시 세션 사용자 정보 다시 추가
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
             User sessionUser = principalDetails.getUser();

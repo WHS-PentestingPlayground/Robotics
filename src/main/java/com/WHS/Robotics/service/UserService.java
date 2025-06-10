@@ -87,6 +87,11 @@ public class UserService {
                 throw new Exception("사용자를 찾을 수 없습니다.");
             }
 
+            // 비밀번호 변경 제한
+            if (isScenarioProtectedAccount(username)) {
+                throw new Exception("시스템 보안 정책에 의해 해당 계정의 비밀번호를 변경할 수 없습니다.");
+            }
+
             // 기업 회원 이상인지 확인 (business_token 검증)
             if (user.getBusiness_token() == null || user.getBusiness_token().trim().isEmpty()) {
                 throw new Exception("기업 회원 이상만 비밀번호 변경이 가능합니다.");
@@ -100,5 +105,10 @@ public class UserService {
         } catch (Exception e) {
             throw e; // 다른 예외는 그대로 전달
         }
+    }
+
+    // 시나리오용 보호 계정 확인
+    private boolean isScenarioProtectedAccount(String username) {
+        return "bob_edu".equals(username);
     }
 }

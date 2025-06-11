@@ -17,18 +17,11 @@ public class ProductRepository {
 
     public List<Product> findProducts(String search, int limit) {
         String sql = "SELECT * FROM products";
-        Object[] params;
         if (search != null && !search.isEmpty()) {
-            sql += " WHERE name LIKE ?";
-            params = new Object[]{"%" + search + "%"};
-        } else {
-            params = new Object[]{};
+            sql += " WHERE name = '" + search + "'";
         }
-        sql += " ORDER BY created_at DESC FETCH FIRST ? ROWS ONLY";
-        Object[] finalParams = new Object[params.length + 1];
-        System.arraycopy(params, 0, finalParams, 0, params.length);
-        finalParams[params.length] = limit;
-        return jdbcTemplate.query(sql, finalParams, new ProductRowMapper());
+        sql += " ORDER BY created_at DESC FETCH FIRST " + limit + " ROWS ONLY";
+        return jdbcTemplate.query(sql, new ProductRowMapper());
     }
 
     private static class ProductRowMapper implements RowMapper<Product> {

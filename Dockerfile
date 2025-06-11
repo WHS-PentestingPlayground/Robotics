@@ -1,17 +1,23 @@
 FROM tomcat:10.1-jdk17-temurin
 
-# 한국 시간대 설정 (KST)
 ENV TZ=Asia/Seoul
 
-# 작업 디렉토리 설정
-WORKDIR /app
+# 1. tomcat 사용자 생성 (uid=1001으로 명시)
+RUN useradd -m -u 1001 tomcat
 
-# WAR 파일 복사 (Spring Boot 3.x에서는 -plain.war가 아닌 일반 .war 사용)
+# 2. WAR 파일과 readflag 복사
 COPY build/libs/Robotics-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
+COPY readflag /readflag
 
-# 8080 포트 노출
+# 3. readflag를 실행 가능하도록 설정
+RUN chmod 0111 /readflag
+
+# 4. Tomcat 디렉토리 소유권 변경
+RUN chown -R tomcat:tomcat /usr/local/tomcat
+
+# 5. tomcat 유저로 전환
+USER tomcat
+
+# 6. 포트 노출 및 실행
 EXPOSE 8080
-
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-CMD ["/entrypoint.sh"]
+CMD ["catalina.sh", "run"]

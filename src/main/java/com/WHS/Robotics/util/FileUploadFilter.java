@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FileUploadFilter {
-    private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png", "gif");
+    public static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png", "gif");
 
     public static String validateAndSaveImage(MultipartFile file, String path, ServletContext servletContext) throws Exception {
         String fileName = (file != null) ? file.getOriginalFilename() : null;
@@ -21,15 +21,11 @@ public class FileUploadFilter {
                 throw new IllegalArgumentException("Only image files are allowed.");
             }
         }
+        if ((path + fileName).equals("/uploads/img/")) {
+            return null;
+        }
 
         String uploadDir = servletContext.getRealPath("/");
-        if (path == null || path.equals("/")) {
-            path = "";
-        }
-        if (!path.isEmpty() && !path.endsWith("/")) {
-            path += "/";
-        }
-
         File dest = new File(uploadDir, path + fileName);
         File parent = dest.getParentFile();
         if (!parent.exists()) parent.mkdirs();

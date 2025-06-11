@@ -80,12 +80,6 @@ public class BoardController {
         // 첨부 파일 정보 추가
         List<com.WHS.Robotics.entity.File> attachedFiles = fileRepository.findByBoardId((long) id);
 
-        for (com.WHS.Robotics.entity.File file : attachedFiles) {
-            String path = file.getFilePath();
-            if (path != null && path.endsWith("/")) {
-                file.setFilePath(path.substring(0, path.length() - 1));
-            }
-        }
         model.addAttribute("attachedFiles", attachedFiles);
         return "post";
     }

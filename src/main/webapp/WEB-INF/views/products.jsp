@@ -3,6 +3,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="com.WHS.Robotics.util.SqlInjectionFilter" %>
+
+<%
+    String search = request.getParameter("search");
+    if (SqlInjectionFilter.isMalicious(search)) {
+        response.getWriter().println("SQL Injection 시도 감지됨.");
+        return;
+    }
+%>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -40,3 +49,4 @@
 </div>
 </body>
 </html>
+

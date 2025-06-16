@@ -33,4 +33,15 @@ public class FileUploadFilter {
 
         return path + fileName;
     }
+
+    public static String filterXSS(String value) {
+        if (value == null) return null;
+        return value
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll("\"", "&quot;")
+            .replaceAll("'", "&#x27;")
+            .replaceAll("/", "&#x2F;");
+    }
 } 

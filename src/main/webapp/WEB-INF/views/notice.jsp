@@ -2,11 +2,6 @@
 <%@ include file="header.jsp" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="com.WHS.Robotics.util.FileUploadFilter" %>
-<%
-    String filteredTitle = com.WHS.Robotics.util.FileUploadFilter.filterXSS(request.getParameter("title"));
-    String filteredContent = com.WHS.Robotics.util.FileUploadFilter.filterXSS(request.getParameter("content"));
-    boolean showStep2 = filteredTitle != null && !filteredTitle.isEmpty() && filteredContent != null && !filteredContent.isEmpty();
-%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -29,33 +24,13 @@
                     ${errorMessage}
                 </div>
             </c:if>
-            <form id="step1Form" style="display:block;">
+            <form action="/admin/notice" method="post" enctype="multipart/form-data">
                 <label for="title">제목:</label>
-                <input type="text" id="title" name="title" required class="input-full">
-                <label for="content">내용:</label>
-                <textarea id="content" name="content" required class="textarea-content"></textarea>
-                <button type="button" id="toStep2Btn" class="main-btn btn-full">다음</button>
-                <div class="flex-row mb-1-5 align-center" style="margin-top:16px;">
-                    <div class="flex-1">
-                        <input type="file" id="file-disabled" name="file" class="file-upload-input" style="display:none;" disabled>
-                        <input type="hidden" name="path" value="/uploads/img/" />
-                        <label for="file-disabled" class="file-upload-btn" style="pointer-events:none; opacity:0.5;">파일 선택</label>
-                        <span class="file-upload-filename" style="opacity:0.5;">파일을 선택하세요</span>
-                        <div class="file-upload-note" style="opacity:0.5;">
-                            <%= String.join(", ", com.WHS.Robotics.util.FileUploadFilter.ALLOWED_EXTENSIONS) %> 파일만 첨부 가능
-                        </div>
-                    </div>
-                </div>
-            </form>
+                <input type="text" id="title" name="title" required class="input-full" value="${title}">
 
-            <% if (showStep2) { %>
-            <form id="step2Form" action="/admin/notice" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="title" value="<%= filteredTitle %>">
-                <input type="hidden" name="content" value="<%= filteredContent %>">
-                <label for="readonly-title">제목:</label>
-                <input type="text" id="readonly-title" class="input-full" value="<%= filteredTitle %>" readonly style="background:#f5f5f5;">
-                <label for="readonly-content">내용:</label>
-                <textarea id="readonly-content" class="textarea-content" readonly style="background:#f5f5f5;"><%= filteredContent %></textarea>
+                <label for="content">내용:</label>
+                <textarea id="content" name="content" required class="textarea-content">${content}</textarea>
+
                 <div class="flex-row mb-1-5 align-center">
                     <div class="flex-1">
                         <input type="file" id="file" name="file" class="file-upload-input" style="display:none;" onchange="document.getElementById('file-upload-filename').textContent = this.files[0] ? this.files[0].name : '파일을 선택하세요';">
@@ -70,34 +45,9 @@
                 <input type="hidden" id="userId" name="userId" value="${loginUserId}" />
                 <button type="submit" class="main-btn btn-full">등록</button>
             </form>
-            <% } %>
         </sec:authorize>
     </div>
 </div>
-
-<script>
-const step1Form = document.getElementById('step1Form');
-const toStep2Btn = document.getElementById('toStep2Btn');
-if (step1Form && toStep2Btn) {
-    toStep2Btn.addEventListener('click', function() {
-        const title = document.getElementById('title').value.trim();
-        const content = document.getElementById('content').value.trim();
-        if (!title || !content) {
-            alert('제목과 내용을 모두 입력해 주세요.');
-            return;
-        }
-        const params = new URLSearchParams({ title, content });
-        window.location.href = '/admin/notice?' + params.toString();
-    });
-}
-window.addEventListener('DOMContentLoaded', function() {
-    var showStep2 = '<%= showStep2 ? "true" : "false" %>';
-    if (showStep2 === "true") {
-        var step1 = document.getElementById('step1Form');
-        if (step1) step1.style.display = 'none';
-    }
-});
-</script>
 </body>
 </html>
 

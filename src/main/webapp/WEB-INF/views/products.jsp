@@ -6,9 +6,10 @@
 
 <%
     String search = request.getParameter("search");
-    if (SqlInjectionFilter.isMalicious(search)) {
-        response.getWriter().println("SQL Injection 시도 감지됨.");
-        return;
+    boolean isSqlMalicious = SqlInjectionFilter.isMalicious(search);
+    String sqlMaliciousError = null;
+    if (isSqlMalicious) {
+        sqlMaliciousError = "입력값에 허용되지 않은 문자가 포함되어 있습니다.";
     }
 %>
 
@@ -22,6 +23,11 @@
 <body>
 <div class="container">
     <h1 class="text-center mb-2">대표 로봇 제품</h1>
+    <% if (sqlMaliciousError != null) { %>
+        <div class="alert alert-danger" style="color:#b71c1c; background:#ffeaea; border:1px solid #f5c2c7; padding:10px; margin-bottom:16px; border-radius:6px;">
+            <%= sqlMaliciousError %>
+        </div>
+    <% } %>
     <form method="get" action="/products" class="product-search-form">
         <input type="text" name="search" value="${search}" placeholder="제품명 검색" class="product-search-input">
         <button type="submit" class="product-search-btn">검색</button>

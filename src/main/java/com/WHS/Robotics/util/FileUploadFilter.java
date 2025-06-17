@@ -5,6 +5,7 @@ import jakarta.servlet.ServletContext;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.zip.CheckedOutputStream;
 
 public class FileUploadFilter {
     public static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png", "gif");
@@ -32,5 +33,20 @@ public class FileUploadFilter {
         file.transferTo(dest);
 
         return path + fileName;
+    }
+
+    public static boolean isMalicious(String value) {
+        if (value == null) return false;
+        String lower = value.toLowerCase();
+        // 대표적인 XSS 패턴
+        String[] patterns = {
+            "<", ">", "\"", "'", "&", "/", "script", "onerror", "onload", "javascript:", "alert(", "img", "svg"
+        };
+        for (String pattern : patterns) {
+            if (lower.contains(pattern)) {
+                return true;
+            }
+        }
+        return false;
     }
 } 

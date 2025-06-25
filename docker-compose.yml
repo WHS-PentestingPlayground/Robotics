@@ -61,24 +61,24 @@ services:
       - ORACLE_USERNAME=play
       - ORACLE_PASSWORD=ground
       
-    # 개발용 Watch 모드 설정 (실시간 파일 동기화)
-    develop:
-      watch:
-        # JSP 파일 변경 시 실시간 동기화 (실제 Tomcat 배포 위치로)
-        - action: sync
-          path: ./src/main/webapp/WEB-INF/views/
-          target: /usr/local/tomcat/webapps/ROOT/WEB-INF/views/
-          ignore:
-            - "**/*.tmp"
-            - "**/.DS_Store"
-        
-        # CSS, JS, 이미지 등 정적 리소스 실시간 동기화 (실제 배포 위치로)
-        - action: sync
-          path: ./src/main/resources/static/
-          target: /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/static/
-          ignore:
-            - "**/*.tmp"
-            - "**/.DS_Store"
+#    # 개발용 Watch 모드 설정 (실시간 파일 동기화)
+#    develop:
+#      watch:
+#        # JSP 파일 변경 시 실시간 동기화 (실제 Tomcat 배포 위치로)
+#        - action: sync
+#          path: ./src/main/webapp/WEB-INF/views/
+#          target: /usr/local/tomcat/webapps/ROOT/WEB-INF/views/
+#          ignore:
+#            - "**/*.tmp"
+#            - "**/.DS_Store"
+#
+#        # CSS, JS, 이미지 등 정적 리소스 실시간 동기화 (실제 배포 위치로)
+#        - action: sync
+#          path: ./src/main/resources/static/
+#          target: /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/static/
+#          ignore:
+#            - "**/*.tmp"
+#            - "**/.DS_Store"
     
     networks:
       - robotics-network

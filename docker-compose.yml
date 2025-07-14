@@ -33,8 +33,6 @@ services:
       - SPRING_DATASOURCE_USERNAME=play
       - SPRING_DATASOURCE_PASSWORD=ground
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=oracle.jdbc.OracleDriver
-      - ORACLE_USERNAME=play
-      - ORACLE_PASSWORD=ground
     
     networks:
       - robotics-network

@@ -42,6 +42,10 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-taglibs'
 }
 
+springBoot {
+    mainClass = 'com.WHS.Robotics.RoboticsApplication'
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }

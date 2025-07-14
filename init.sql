@@ -134,10 +134,6 @@ BEGIN
 END;
 /
 
--- 테이블 생성 완료 확인
-SELECT 'Tables created successfully in FREEPDB1 for user play' AS STATUS FROM DUAL;
-SELECT TABLE_NAME FROM USER_TABLES;
-
 -- 시나리오용 고정 계정 생성
 -- 관리자 계정 생성
 INSERT INTO USERS (ID, USERNAME, PASSWORD, ROLE, CREATED_AT) 

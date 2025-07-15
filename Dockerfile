@@ -13,7 +13,7 @@ ENV TZ=Asia/Seoul
 RUN useradd -m -u 1001 tomcat
 
 # WAR 파일 복사
-COPY --from=builder /home/gradle/src/build/libs/*.war /usr/local/tomcat/webapps/ROOT.war
+COPY --from=builder /home/gradle/src/build/libs/Robotics-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
 COPY readflag /readflag
 RUN chmod 0111 /readflag
 RUN chown -R tomcat:tomcat /usr/local/tomcat

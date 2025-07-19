@@ -17,9 +17,15 @@
         <form action="/register" method="post">
             <label for="username">아이디:</label>
             <input type="text" id="username" name="username" required class="input-full">
+            <div class="text-muted small" style="margin-top:4px; margin-bottom:12px;">
+                아이디는 4~16자리의 영문 또는 숫자만 사용할 수 있습니다.
+            </div>
 
             <label for="password">비밀번호:</label>
             <input type="password" id="password" name="password" required class="input-full">
+            <div class="text-muted small" style="margin-top:4px; margin-bottom:12px;">
+                비밀번호는 8~16자리여야 합니다.
+            </div>
 
             <label for="passwordConfirm">비밀번호 확인:</label>
             <input type="password" id="passwordConfirm" name="passwordConfirm" required class="input-full">

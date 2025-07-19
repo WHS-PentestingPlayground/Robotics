@@ -40,10 +40,37 @@
                     </div>
                 </div>
                 <div class="mypage-actions">
-                    <button class="action-btn" onclick="location.href='/mypage/password'">비밀번호 변경</button>
+                    <button class="action-btn" id="passwordChangeBtn">비밀번호 변경</button>
                 </div>
             </div>
         </div>
     </div>
 </body>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var btn = document.getElementById('passwordChangeBtn');
+    if (btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            fetch('/mypage/password', {
+                method: 'GET',
+                credentials: 'same-origin'
+            })
+            .then(function(response) {
+                if (response.status === 403) {
+                    alert('권한이 없습니다');
+                } else if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    response.text().then(function(html) {
+                        document.open();
+                        document.write(html);
+                        document.close();
+                    });
+                }
+            });
+        });
+    }
+});
+</script>
 </html> 

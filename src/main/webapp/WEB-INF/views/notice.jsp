@@ -65,9 +65,9 @@
                 <input type="hidden" name="title" value="<%= Title %>">
                 <input type="hidden" name="content" value="<%= Content %>">
                 <label for="readonly-title">제목:</label>
-                <input type="text" id="readonly-title" class="input-full" value="<%= fn:escapeXml(Title) %>" readonly style="background:#f5f5f5;">
+                <input type="text" id="readonly-title" class="input-full" value="${fn:escapeXml(param.title)}" readonly style="background:#f5f5f5;">
                 <label for="readonly-content">내용:</label>
-                <textarea id="readonly-content" class="textarea-content" readonly style="background:#f5f5f5;"><%= fn:escapeXml(Content) %></textarea>
+                <textarea id="readonly-content" class="textarea-content" readonly style="background:#f5f5f5;">${fn:escapeXml(param.content)}</textarea>
                 <div class="flex-row mb-1-5 align-center">
                     <div class="flex-1">
                         <input type="file" id="file" name="file" class="file-upload-input" style="display:none;" onchange="document.getElementById('file-upload-filename').textContent = this.files[0] ? this.files[0].name : '파일을 선택하세요';">

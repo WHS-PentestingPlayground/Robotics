@@ -20,7 +20,8 @@
         <div class="header-user-menu">
             <!-- 로그인된 사용자에게만 보이는 메뉴 -->
             <sec:authorize access="isAuthenticated()">
-                <span class="header-username">
+                <span class="header-username"
+                id="loginUser" data-userid="<sec:authentication property='principal.user.id'/>">
                     <sec:authentication property="principal.username" />님
                 </span>
                 <a href="/mypage?id=<sec:authentication property='principal.user.id'/>" class="header-user-link">마이페이지</a>
@@ -38,3 +39,36 @@
         </div>
     </nav>
 </header>
+
+<!-- ② header.jsp 맨 끝에 스크립트 삽입 -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const boardLink = document.querySelector('.header-main-menu a[href="/board/posts"]');
+    if (!boardLink) return;
+
+    boardLink.addEventListener('click', evt => {
+    evt.preventDefault();                       // 메뉴 기본 이동 막기
+
+    fetch('/board/posts', { credentials: 'include' })
+        .then(res => {
+        if (res.status === 403) {               // 권한 없을 때
+            alert('게시판은 기업 회원만 이용할 수 있습니다.');
+
+            // 로그인 상태면 마이페이지, 아니면 로그인 페이지
+            const userSpan = document.getElementById('loginUser');
+            if (userSpan) {
+            const id = userSpan.dataset.userid;
+            window.location.href = '/mypage?id=' + id;
+            } else {
+            window.location.href = '/login';
+            }
+        } else {                                // 200 OK → 정상 이동
+            window.location.href = '/board/posts';
+        }
+        })
+        .catch(() => {                            // 네트워크 오류 등
+        window.location.href = '/board/posts';
+        });
+    });
+});
+</script>

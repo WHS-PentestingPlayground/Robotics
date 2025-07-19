@@ -1,0 +1,76 @@
+services:
+  oracle-db:
+    image: gvenzl/oracle-free:slim
+    container_name: oracle-free
+    environment:
+      - ORACLE_PASSWORD=admin123
+      - APP_USER=play
+      - APP_USER_PASSWORD=ground
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+      - ./init.sql:/container-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    networks:
+      - robotics-network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app1
+      - app2
+    networks:
+      - robotics-network
+
+  app1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: robotics-app1
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@oracle-db:1521/FREEPDB1
+      - SPRING_DATASOURCE_USERNAME=play
+      - SPRING_DATASOURCE_PASSWORD=ground
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=oracle.jdbc.OracleDriver
+    networks:
+      - robotics-network
+    restart: unless-stopped
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+
+  app2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: robotics-app2
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@oracle-db:1521/FREEPDB1
+      - SPRING_DATASOURCE_USERNAME=play
+      - SPRING_DATASOURCE_PASSWORD=ground
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=oracle.jdbc.OracleDriver
+    networks:
+      - robotics-network
+    restart: unless-stopped
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+
+# 데이터 볼륨
+volumes:
+  oracle-data:
+    driver: local
+
+# 네트워크 설정
+networks:
+  robotics-network:
+    driver: bridge 

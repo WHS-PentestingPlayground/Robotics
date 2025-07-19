@@ -1,0 +1,128 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+body {
+  font-family: 'Pretendard', 'sans-serif';
+  background: #f7fafc;
+  color: #222;
+}
+
+.about-hero {
+  width: 100%;
+  height: 220px;
+  background: url('https://images.unsplash.com/photo-1581092921461-39b9d08a9b21?auto=format&fit=crop&w=1500&q=80') center center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  position: relative;
+  overflow: hidden;
+}
+
+.about-hero::after {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(128, 131, 132, 0.85);
+  backdrop-filter: none;
+  z-index: 1;
+}
+
+.about-hero-content {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  text-align: center;
+  width: 100%;
+}
+
+.about-hero-title {
+  font-size: 2.8em;
+  font-weight: 800;
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 12px rgba(23,64,109,0.18);
+}
+
+.about-hero-subtitle {
+  font-size: 1.2em;
+  font-weight: 400;
+  opacity: 0.95;
+  text-shadow: 0 1px 6px rgba(23,64,109,0.10);
+}
+
+.values-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 36px;
+  margin-top: 48px;
+}
+
+.value-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 36px 26px;
+  text-align: center;
+  box-shadow: 0 2px 16px rgba(23,64,109,0.08);
+  transition: transform 0.25s, box-shadow 0.25s;
+  border: 1.5px solid #f0f4fa;
+}
+
+.value-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 8px 32px rgba(23,64,109,0.13);
+  border-color: #a9d6e5;
+}
+
+.value-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 20px;
+  background: #eaf6fb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2em;
+  color: #4682a9;
+  box-shadow: 0 2px 8px rgba(23,64,109,0.07);
+}
+
+.value-title {
+  font-size: 1.4em;
+  font-weight: 700;
+  color: #17406d;
+  margin-bottom: 12px;
+}
+
+.value-desc {
+  font-size: 1.05em;
+  line-height: 1.6;
+  color: #4a5a6a;
+}
+
+.about-title {
+  font-size: 2em;
+  font-weight: 700;
+  color: #17406d;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 900px) {
+  .values-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .about-hero-title {
+    font-size: 2em;
+  }
+  .about-hero {
+    height: 140px;
+  }
+} 

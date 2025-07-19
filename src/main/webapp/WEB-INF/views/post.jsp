@@ -13,8 +13,8 @@
 <body>
 <div class="container container-post">
     <div class="card card-post mb-2">
-        <h2>${board.title}</h2>
-        <p>${board.content}</p>
+        <h2>${fn:escapeXml(board.title)}</h2>
+        <p>${fn:escapeXml(board.content)}</p>
         <c:if test="${not empty attachedFiles}">
             <div class="mb-1-5">
                 <c:forEach var="file" items="${attachedFiles}">
@@ -25,7 +25,7 @@
             </div>
         </c:if>
         <p class="text-muted small">
-            작성자: ${username} / ${board.createdAt}
+            작성자: ${fn:escapeXml(username)} / ${board.createdAt}
         </p>
         <div class="mt-1-5">
             <sec:authorize access="isAuthenticated()">
@@ -55,7 +55,7 @@
                 <li class="mb-07">
                     <!-- 댓글 내용+버튼 그룹 -->
                     <div id="comment-view-${comment.id}" class="d-inline">
-                        ${comment.content} (작성자: ${commentUsernames[comment.id]}, ${comment.createdAt})
+                        ${fn:escapeXml(comment.content)} (작성자: ${fn:escapeXml(commentUsernames[comment.id])}, ${comment.createdAt})
                         <sec:authorize access="isAuthenticated()">
                             <c:if test="${loginUserId == comment.userId || loginUserRole == 'ADMIN'}">
                                 <form action="/deleteComment" method="post" class="d-inline ml-8">
@@ -74,7 +74,7 @@
                     <form id="edit-form-${comment.id}" action="/updateComment" method="post" class="d-none ml-8">
                         <input type="hidden" name="commentId" value="${comment.id}" />
                         <input type="hidden" name="boardId" value="${board.id}" />
-                        <input type="text" name="content" id="edit-input-${comment.id}" value="${comment.content}" class="input-xs" />
+                        <input type="text" name="content" id="edit-input-${comment.id}" value="${fn:escapeXml(comment.content)}" class="input-xs" />
                         <button type="submit" class="main-btn btn-success btn-xs">완료</button>
                         <button type="button" class="main-btn btn-cancel btn-xs" onclick="hideEditForm('${comment.id}')">취소</button>
                     </form>
@@ -86,7 +86,7 @@
             <input type="hidden" name="boardId" value="${board.id}" />
             <input type="hidden" name="userId" value="${loginUserId}" />
             <div class="mb-1 text-muted small">
-                작성자: <b>${loginUsername}</b>
+                작성자: <b>${fn:escapeXml(loginUsername)}</b>
             </div>
             <textarea name="content" class="textarea-comment"></textarea><br>
             <button type="submit" class="main-btn">댓글 작성</button>

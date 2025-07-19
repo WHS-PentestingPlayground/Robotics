@@ -40,6 +40,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-devtools'
 	//<sec:authorize 같은 것을 JSP에서 사용하기 위해서, 아래와 같은 의존성 추가했습니다 
 	implementation 'org.springframework.security:spring-security-taglibs'
+	// XSS 방지를 위한 라이브러리
+	implementation 'org.owasp.encoder:encoder:1.2.3'
+	implementation 'org.jsoup:jsoup:1.17.2'
 }
 
 springBoot {

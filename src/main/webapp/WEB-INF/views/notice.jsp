@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ include file="header.jsp" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page import="com.WHS.Robotics.util.FileUploadFilter" %>
 <%
     String Title = request.getParameter("title");
@@ -27,7 +28,7 @@
             <h2 class="text-center">공지사항 작성</h2>
             <div class="flex-1 author-box-right">
                 <div class="text-muted small">
-                    작성자: <b>${loginUsername}</b>
+                    작성자: <b>${fn:escapeXml(loginUsername)}</b>
                 </div>
             </div>
             <c:if test="${not empty errorMessage}">
@@ -64,9 +65,9 @@
                 <input type="hidden" name="title" value="<%= Title %>">
                 <input type="hidden" name="content" value="<%= Content %>">
                 <label for="readonly-title">제목:</label>
-                <input type="text" id="readonly-title" class="input-full" value="<%= Title %>" readonly style="background:#f5f5f5;">
+                <input type="text" id="readonly-title" class="input-full" value="<%= fn:escapeXml(Title) %>" readonly style="background:#f5f5f5;">
                 <label for="readonly-content">내용:</label>
-                <textarea id="readonly-content" class="textarea-content" readonly style="background:#f5f5f5;"><%= Content %></textarea>
+                <textarea id="readonly-content" class="textarea-content" readonly style="background:#f5f5f5;"><%= fn:escapeXml(Content) %></textarea>
                 <div class="flex-row mb-1-5 align-center">
                     <div class="flex-1">
                         <input type="file" id="file" name="file" class="file-upload-input" style="display:none;" onchange="document.getElementById('file-upload-filename').textContent = this.files[0] ? this.files[0].name : '파일을 선택하세요';">

@@ -22,6 +22,7 @@ import java.util.Map;
 import com.WHS.Robotics.repository.FileRepository;
 import jakarta.servlet.ServletContext;
 import com.WHS.Robotics.util.FileUploadFilter;
+import com.WHS.Robotics.util.XssFilter;
 
 @Controller
 public class BoardController {
@@ -99,9 +100,11 @@ public class BoardController {
     public String newPost(@RequestParam String title,
                           @RequestParam String content,
                           @RequestParam int userId) throws Exception {
+        // XSS 정제만 수행 (예외 발생 X)
+        String[] sanitized = XssFilter.sanitizeTitleAndContent(title, content);
         Board board = new Board();
-        board.setTitle(title);
-        board.setContent(content);
+        board.setTitle(sanitized[0]);
+        board.setContent(sanitized[1]);
         board.setUserId(userId);
         board.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         boardRepository.save(board);
@@ -121,10 +124,12 @@ public class BoardController {
     public String writeComment(@RequestParam int boardId,
                                @RequestParam int userId,
                                @RequestParam String content) throws Exception {
+        // XSS 정제만 수행 (예외 발생 X)
+        String sanitizedContent = XssFilter.sanitizeComment(content);
         Comment comment = new Comment();
         comment.setBoardId(boardId);
         comment.setUserId(userId);
-        comment.setContent(content);
+        comment.setContent(sanitizedContent);
         comment.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         commentRepository.save(comment);
         return "redirect:/board/post?id=" + boardId;
@@ -144,7 +149,9 @@ public class BoardController {
     public String updateComment(@RequestParam int commentId,
                                 @RequestParam String content,
                                 @RequestParam int boardId) throws Exception {
-        boardService.updateComment(commentId, content);
+        // XSS 정제만 수행 (예외 발생 X)
+        String sanitizedContent = XssFilter.sanitizeComment(content);
+        boardService.updateComment(commentId, sanitizedContent);
         return "redirect:/board/post?id=" + boardId;
     }
 
@@ -166,6 +173,8 @@ public class BoardController {
                               @RequestParam(value = "file", required = false) MultipartFile file,
                               @RequestParam(value = "path", required = false) String path,
                               Model model) throws Exception {
+        // XSS 정제만 수행 (예외 발생 X)
+        String[] sanitized = XssFilter.sanitizeTitleAndContent(title, content);
         String filePath = null;
         try {
             filePath = FileUploadFilter.validateAndSaveImage(file, path, servletContext);
@@ -176,7 +185,7 @@ public class BoardController {
             model.addAttribute("content", content);
             return "notice";
         }
-        boardService.writeNotice(title, content, userId, filePath);
+        boardService.writeNotice(sanitized[0], sanitized[1], userId, filePath);
         return "redirect:/board/posts";
     }
 
@@ -199,7 +208,9 @@ public class BoardController {
                            @RequestParam String title,
                            @RequestParam String content,
                            @RequestParam int userId) throws Exception {
-        boardService.editPost(id, title, content, userId);
+        // XSS 정제만 수행 (예외 발생 X)
+        String[] sanitized = XssFilter.sanitizeTitleAndContent(title, content);
+        boardService.editPost(id, sanitized[0], sanitized[1], userId);
         return "redirect:/board/post?id=" + id;
     }
 
@@ -225,7 +236,9 @@ public class BoardController {
                             @RequestParam String title,
                             @RequestParam String content,
                             @RequestParam(value = "file", required = false) MultipartFile file) throws Exception {
-        boardService.editNotice(id, title, content, file, servletContext);
+        // XSS 정제만 수행 (예외 발생 X)
+        String[] sanitized = XssFilter.sanitizeTitleAndContent(title, content);
+        boardService.editNotice(id, sanitized[0], sanitized[1], file, servletContext);
         return "redirect:/board/post?id=" + id;
     }
 }

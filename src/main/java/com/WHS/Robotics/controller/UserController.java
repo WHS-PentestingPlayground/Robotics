@@ -45,7 +45,6 @@ public class UserController {
     public String register(@RequestParam String username,
                           @RequestParam String password,
                           @RequestParam String passwordConfirm,
-                          @RequestParam String role,
                           Model model) {
         try {
             // 아이디 규칙 체크: 4~16자리, 영문/숫자만 허용
@@ -70,7 +69,7 @@ public class UserController {
                 model.addAttribute("error", "이미 존재하는 아이디입니다.");
                 return "register";
             }
-            userService.register(username, password, role);
+            userService.register(username, password);
             return "redirect:/login";
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().contains("ORA-17132")) {

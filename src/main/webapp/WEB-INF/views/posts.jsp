@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ include file="header.jsp" %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -15,8 +16,8 @@
     <c:forEach var="post" items="${boards}">
         <c:if test="${post.notice}">
             <li class="post-item">
-                <a href="/board/post?id=${post.id}" class="notice-title">${post.title}</a>
-                <span class="notice-author">작성자: ${userNamesByBoardId[post.id]}</span>
+                <a href="/board/post?id=${post.id}" class="notice-title">${fn:escapeXml(post.title)}</a>
+                <span class="notice-author">작성자: ${fn:escapeXml(userNamesByBoardId[post.id])}</span>
             </li>
         </c:if>
     </c:forEach>
@@ -27,8 +28,8 @@
     <c:forEach var="post" items="${boards}">
         <c:if test="${!post.notice}">
             <li class="post-item">
-                <a href="/board/post?id=${post.id}" class="post-title">${post.title}</a>
-                <span class="post-author">작성자: ${userNamesByBoardId[post.id]}</span>
+                <a href="/board/post?id=${post.id}" class="post-title">${fn:escapeXml(post.title)}</a>
+                <span class="post-author">작성자: ${fn:escapeXml(userNamesByBoardId[post.id])}</span>
             </li>
         </c:if>
     </c:forEach>

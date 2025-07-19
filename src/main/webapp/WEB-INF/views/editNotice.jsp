@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ include file="header.jsp" %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -15,16 +16,16 @@
         <form action="/board/editNotice" method="post" enctype="multipart/form-data">
             <input type="hidden" name="id" value="${notice.id}" />
             <label for="title">제목:</label>
-            <input type="text" id="title" name="title" value="${notice.title}" required class="input-full">
+            <input type="text" id="title" name="title" value="${fn:escapeXml(notice.title)}" required class="input-full">
 
             <label for="content">내용:</label>
-            <textarea id="content" name="content" required class="textarea-content mb-1-5">${notice.content}</textarea>
+            <textarea id="content" name="content" required class="textarea-content mb-1-5">${fn:escapeXml(notice.content)}</textarea>
 
             <c:if test="${not empty attachedFiles}">
                 <div class="mb-1">
                     <b>기존 첨부파일:</b>
                     <c:forEach var="file" items="${attachedFiles}">
-                        <a href="/uploads/${file.filePath}" target="_blank">${file.fileName}</a>
+                        <a href="/uploads/${file.filePath}" target="_blank">${fn:escapeXml(file.fileName)}</a>
                     </c:forEach>
                 </div>
             </c:if>

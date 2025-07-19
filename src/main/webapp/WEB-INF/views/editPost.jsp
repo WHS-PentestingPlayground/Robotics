@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ include file="header.jsp" %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -14,14 +15,14 @@
         <form action="/board/editPost" method="post">
             <input type="hidden" name="id" value="${board.id}" />
             <label for="title">제목:</label>
-            <input type="text" id="title" name="title" value="${board.title}" required class="input-full">
+            <input type="text" id="title" name="title" value="${fn:escapeXml(board.title)}" required class="input-full">
 
             <label for="content">내용:</label>
-            <textarea id="content" name="content" required class="textarea-content">${board.content}</textarea>
+            <textarea id="content" name="content" required class="textarea-content">${fn:escapeXml(board.content)}</textarea>
 
             <input type="hidden" id="userId" name="userId" value="${loginUserId}" />
             <div class="mb-1-5 text-muted small">
-                작성자: <b>${loginUsername}</b>
+                작성자: <b>${fn:escapeXml(loginUsername)}</b>
             </div>
 
             <button type="submit" class="main-btn btn-full">수정 완료</button>

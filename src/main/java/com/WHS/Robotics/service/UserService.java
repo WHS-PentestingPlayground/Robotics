@@ -50,18 +50,31 @@ public class UserService {
         return null;
     }
 
-    // 비밀번호 변경용 엄격한 규칙 검사: 8~16자리, 영문 대소문자/숫자/특수문자 모두 포함
+    // 비밀번호 변경용 엄격한 규칙 검사: 8~16자리, 영문 대소문자/숫자/특수문자 모두 포함, 특수문자 2개 이상
     public String validatePasswordForChange(String password) {
         if (password == null || password.length() < 8 || password.length() > 16) {
             return "비밀번호는 8~16자리여야 합니다.";
         }
-        int count = 0;
-        if (password.matches(".*[a-zA-Z].*")) count++;
-        if (password.matches(".*[0-9].*")) count++;
-        if (password.matches(".*[^a-zA-Z0-9].*")) count++;
-        if (count < 3) {
-            return "비밀번호는 영문 대소문자/숫자/특수문자를 모두 포함해야 합니다.";
+        
+        // 영문 대소문자 포함 확인
+        if (!password.matches(".*[a-zA-Z].*")) {
+            return "비밀번호는 영문 대소문자를 포함해야 합니다.";
         }
+        
+        // 숫자 포함 확인
+        if (!password.matches(".*[0-9].*")) {
+            return "비밀번호는 숫자를 포함해야 합니다.";
+        }
+        
+        // 특수문자 2개 이상 포함 확인
+        long specialCharCount = password.chars()
+            .filter(ch -> !Character.isLetterOrDigit(ch))
+            .count();
+        
+        if (specialCharCount < 2) {
+            return "비밀번호는 특수문자를 2개 이상 포함해야 합니다.";
+        }
+        
         return null;
     }
   

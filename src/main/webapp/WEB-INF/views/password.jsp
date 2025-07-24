@@ -41,7 +41,7 @@
                 <label for="newPassword">새 비밀번호:</label>
                 <input type="password" id="newPassword" name="newPassword" required>
                 <div class="password-requirements">
-                    ※ 8~16자리, 영문 대소문자/숫자/특수문자를 모두 포함해야 합니다.
+                    ※ 8~16자리, 영문 대소문자/숫자/특수문자(2개 이상)를 모두 포함해야 합니다.
                 </div>
             </div>
             
@@ -112,7 +112,7 @@
             requirementsElement.classList.remove('requirements-valid', 'requirements-invalid');
             
             if (newPassword.length > 0) {
-                // 비밀번호 규칙 검사: 8~16자리, 영문 대소문자/숫자/특수문자 모두 포함
+                // 비밀번호 규칙 검사: 8~16자리, 영문 대소문자/숫자/특수문자(2개 이상) 모두 포함
                 let isValid = true;
                 
                 if (newPassword.length < 8 || newPassword.length > 16) {
@@ -121,9 +121,9 @@
                 
                 let hasLetter = /[a-zA-Z]/.test(newPassword);
                 let hasNumber = /[0-9]/.test(newPassword);
-                let hasSpecial = /[^a-zA-Z0-9]/.test(newPassword);
+                let specialCharCount = (newPassword.match(/[^a-zA-Z0-9]/g) || []).length;
                 
-                if (!hasLetter || !hasNumber || !hasSpecial) {
+                if (!hasLetter || !hasNumber || specialCharCount < 2) {
                     isValid = false;
                 }
                 

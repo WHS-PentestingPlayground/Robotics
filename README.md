@@ -18,7 +18,7 @@
 2. [기여자 표](#기여자-표)
 3. [협업 방식](#협업-방식)
 4. [개발 기간](#개발-기간)
-5. [시스템 아키텍처](#시스템-아키텍처)
+5. [공격 흐름도](#공격흐름도)
 6. [ERD](#erd)
 7. [시나리오](#시나리오)
 
@@ -122,9 +122,9 @@ docker compose up -d --build
 - 2025.06.09 ~ 2025.06.22 : 취약점(IDOR,Blind Sqli,file download/upload)구현 및 난이도조정</br>
 
 ---
-<a id="시스템-아키텍처"></a>
-## 🛠️ 시스템 아키텍처(수정예정)
-![MJSECCTF drawio](https://github.com/user-attachments/assets/1257fdac-4325-4c3a-a94f-27f323842ab4)
+<a id="공격흐름도"></a>
+## 🛠️ 공격 흐름도
+<img width="1700" height="923" alt="Image" src="https://github.com/user-attachments/assets/42dae4ec-39a6-4ff3-a7d6-fff50821a3e8" />
 
 ---
 
